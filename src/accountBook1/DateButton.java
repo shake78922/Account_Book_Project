@@ -27,7 +27,7 @@ public class DateButton extends JFrame implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		jb = (JButton)e.getSource();
-		jb.setBackground(Color.white);
+		jb.setOpaque(false);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class DateButton extends JFrame implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		jb = (JButton)e.getSource();
-		jb.setBackground(Color.white);
+		jb.setOpaque(false);
 		
 	}
 	

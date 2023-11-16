@@ -35,6 +35,8 @@ public class DateBox extends JPanel{
 		this.jb = jb;
 		this.click = click;
 		setPreferredSize(new Dimension(width, height));	
+		jb.setSize(width, height);
+		jb.setLayout(null);
 		jb.addMouseListener(click);
 		add(jb);
 	}

@@ -21,7 +21,8 @@ import javax.swing.SwingConstants;
 public class Diary extends JFrame implements ActionListener{
 	String[] dayAr = {"일", "월", "화", "수", "목", "금", "토"};
 	DateBox[] dateBoxAr = new DateBox[dayAr.length*5]; //날짜버튼 객체
-	JButton jButton;
+	JButton jButton = new JButton();
+	DateButton click = new DateButton();
 	JPanel pNorth;
 	JButton btBack;
 	JLabel lbTitle;
@@ -39,7 +40,9 @@ public class Diary extends JFrame implements ActionListener{
 	int lastDate; //월의 마지막 날
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+//		if(jButton.click(MouseEvent e)) {
+//			printDate();
+//		}
 	}
 	
 	public Diary() {
@@ -78,8 +81,7 @@ public class Diary extends JFrame implements ActionListener{
 				updateMonth(1);
 			}
 		});
-		jButton = new JButton();
-		
+
 		my.addActionListener(new ActionListener() {
 			
 			@Override
@@ -130,8 +132,17 @@ public class Diary extends JFrame implements ActionListener{
 	public void createDate() {
 		
 		for(int i = 0; i < dayAr.length*5; i++) {
-			DateBox dateBox = new DateBox("", Color.white, 100, 100);
+			DateBox dateBox = new DateBox("", Color.white, 100, 100,jButton,click);
 			jButton = new JButton();
+			jButton.setPreferredSize(new Dimension(100, 100));
+			jButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					printDate();
+				}
+			});
 			dateBox.add(jButton);
 			pCenter.add(dateBox);
 			dateBoxAr[i] = dateBox;
@@ -155,8 +166,7 @@ public class Diary extends JFrame implements ActionListener{
 	//날짜 박스에 날짜 출력하기
 	public void printDate() {
 		int n = 1;
-		for(int i = 0; i < dateBoxAr.length; i++) {
-			
+		for(int i = 0; i < dateBoxAr.length; i++) {		
 			if(i >= startDay && n <= lastDate) {
 				dateBoxAr[i].day = Integer.toString(n);
 				dateBoxAr[i].repaint();
