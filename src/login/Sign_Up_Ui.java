@@ -56,33 +56,28 @@ public class Sign_Up_Ui {
 		ID.setBounds(160, 220, 50, 60);
 		id.setBounds(190, 235, 130, 30);
 		
-		String name1 = name.getText();
-		String id1 = id.getText();
+		JLabel res = new JLabel();
+		res.setBounds(335, 255, 200, 30);
+		jl.add(res);
 		
 		searchId.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(id.getText().equals(null)) {
-					JOptionPane.showMessageDialog(null, "아이디를 입력해 주세요.");
+				if(id.getText().isEmpty()) {
+					res.setText("아이디를 입력해 주세요.");
 					return;
 				}
-				
-				
 				if(db.findID(id.getText())) {
-					JOptionPane.showMessageDialog(null, "중복된 아이디 입니다.");
-					
+					res.setText("중복된 아이디 입니다.");
 				}else {
-					JOptionPane.showMessageDialog(null, "사용가능한 아이디 입니다.");
+					res.setText("사용가능한 아이디 입니다.");
 				}
 				
 			}
 		});
 		
-		char[] overlapPw1 = pw1.getPassword();
-		char[] overlapPw2 = pw2.getPassword();
-		String ovPw1 = new String(overlapPw1);
-		String ovPw2 = new String(overlapPw1);
+		
 		
 		JButton signUp = new JButton("회원가입");
 		signUp.setBounds(200, 400, 100, 40);
@@ -90,8 +85,17 @@ public class Sign_Up_Ui {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(ovPw1 == ovPw2) {
+				String name1 = name.getText();
+				String id1 = id.getText();
+				char[] overlapPw1 = pw1.getPassword();
+				char[] overlapPw2 = pw2.getPassword();
+				String ovPw1 = new String(overlapPw1);
+				String ovPw2 = new String(overlapPw2);
+				if(ovPw1.equals(ovPw2)) {
 					db.join_membership(id1, ovPw1, name1);
+					JOptionPane.showMessageDialog(sigf,"환영합니다.");
+				}else {
+					JOptionPane.showMessageDialog(sigf, "비밀번호가 일치하지 않습니다.");
 				}
 				
 			}

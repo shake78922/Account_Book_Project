@@ -29,7 +29,14 @@ public class DBuser {
 				}
 			} catch (Exception e) {
 				System.out.println("오류");
-			
+			}finally {
+				try {
+					if(stmt != null) stmt.close();
+		            if(cnn != null) cnn.close();
+					
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 			
 			
@@ -52,6 +59,14 @@ public class DBuser {
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
+			}finally {
+				try {
+					if(stmt != null) stmt.close();
+		            if(cnn != null) cnn.close();
+		            if(rs != null) rs.close();
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 			return overlap;
 		}
@@ -72,6 +87,14 @@ public class DBuser {
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
+			}finally {
+				try {
+					if(stmt != null) stmt.close();
+		            if(cnn != null) cnn.close();
+		            if(rs != null) rs.close();
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 		}
 		
@@ -91,8 +114,18 @@ public class DBuser {
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
+			}finally {
+				try {
+					if(stmt != null) stmt.close();
+		            if(cnn != null) cnn.close();
+		            if(rs != null) rs.close();
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 		}
+		
+		
 		public boolean findPW(String PW) {
 			boolean overlap = false;
 			try {
@@ -109,6 +142,14 @@ public class DBuser {
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
+			}finally {
+				try {
+					if(stmt != null) stmt.close();
+		            if(cnn != null) cnn.close();
+		            if(rs != null) rs.close();
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 			return overlap;
 		}
