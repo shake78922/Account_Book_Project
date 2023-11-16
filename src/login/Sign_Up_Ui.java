@@ -34,11 +34,11 @@ public class Sign_Up_Ui {
 		JLabel NAME = new JLabel("이름");
 		JTextField id = new JTextField(20);
 		NAME.setFont(NAME.getFont().deriveFont(18.0f));
-		JLabel TEL = new JLabel("전화번호");
-		JTextField tel = new JTextField();
-		TEL.setFont(TEL.getFont().deriveFont(18.0f));
-		TEL.setBounds(120, 340, 100, 50);
-		tel.setBounds(190, 350, 130, 30);
+//		JLabel TEL = new JLabel("전화번호");
+//		JTextField tel = new JTextField();
+//		TEL.setFont(TEL.getFont().deriveFont(18.0f));
+//		TEL.setBounds(120, 340, 100, 50);
+//		tel.setBounds(190, 350, 130, 30);
 		JLabel ID = new JLabel("ID");
 		JPasswordField pw1 = new JPasswordField(20);
 		JLabel PW1 = new JLabel("비밀번호");
@@ -63,7 +63,7 @@ public class Sign_Up_Ui {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(id.getText()!= null) {
+				if(id.getText().equals(null)) {
 					JOptionPane.showMessageDialog(null, "아이디를 입력해 주세요.");
 					return;
 				}
@@ -110,8 +110,8 @@ public class Sign_Up_Ui {
 		
 		
 		
-		jl.add(tel);
-		jl.add(TEL);
+//		jl.add(tel);
+//		jl.add(TEL);
 		jl.add(name);
 		jl.add(NAME);
 		jl.add(pw2);
@@ -120,7 +120,7 @@ public class Sign_Up_Ui {
 		jl.add(PW1);
 		jl.add(ID);
 		jl.add(id);
-		TEL.setForeground(Color.WHITE);
+//		TEL.setForeground(Color.WHITE);
 		NAME.setForeground(Color.WHITE);
 		PW2.setForeground(Color.white);
 		ID.setForeground(Color.WHITE);
