@@ -162,7 +162,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                         JOptionPane.showMessageDialog(DiaryFinal.this, "입금창");
                         //입금창 메서드나 클래스 호출 후
                         //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
-                        //만약 라벨1이 입금액을 저장클릭 했다면 라벨1에 왼쪽에 +금액 출력
+                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
                         
                     } else if (rb2.isSelected()) {
                         JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
