@@ -83,6 +83,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         //JFrame의 설정들
         setBounds(450,50,600,700); // ★로그인 창 바운즈 알려주세요 맞출게요
         setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //  ★클로즈 되는건 조장이 정해주세요 어느시점에서 클로즈 될런지
     
@@ -114,6 +115,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                     int year = calendar.get(Calendar.YEAR);
                     int month = calendar.get(Calendar.MONTH) + 1; 
                     int clickedDay = calendar.get(Calendar.DAY_OF_MONTH);
+                    
                     rbGroup.add(rb1); rbGroup.add(rb2);
                     dialPane.add(rb1); dialPane.add(rb2);
                     
@@ -131,9 +133,10 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                 //여기는 조장이..!!!!
                 if (result == JOptionPane.OK_OPTION) {
                     if (rb1.isSelected()) {
-                        JOptionPane.showMessageDialog(DiaryFinal.this, "입금창");
+                        //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
+                    	Deposits d = new Deposits(year, month, clickedDay);
                     } else if (rb2.isSelected()) {
-                        JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
+                        //JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
                     }
                 }
                 
