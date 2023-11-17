@@ -4,233 +4,288 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Calendar;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-public class Diary extends JFrame{
-	String[] dayAr = {"일", "월", "화", "수", "목", "금", "토"};
-	DateBox[] dateBoxAr = new DateBox[dayAr.length*5];
-	JButton jButton;
-	JPanel pNorth;
-	JButton btBack;
-	JLabel lbTitle;
-	JButton btNext;
-	JPanel pCenter; //날짜 박스
-	JPanel pSouth;//입출금내역,My버튼 구역
-	JTextField breakdown;//입출금내역 텍스트필드
-	JButton my;//마이버튼
-	JLabel label;
-	Calendar cal; //날짜 객체
-	
-	int yy; //기준점이 되는 년도
-	int mm; //기준점이 되는 월
-	int startDay; //월의 시작 요일
-	int lastDate; //월의 마지막 날
-	
-	
-	public Diary() {
-		//디자인
-		pNorth = new JPanel();
-		btBack = new JButton("◀");
-		lbTitle = new JLabel("년 월", SwingConstants.CENTER);
-		btNext = new JButton("▶");
-		pCenter = new JPanel();
-		pSouth = new JPanel();
-		my = new JButton("My");
-		
-		
-		//라벨에 폰트 설정
-		lbTitle.setFont(new Font("SansSerif", Font.BOLD, 30));
-		lbTitle.setPreferredSize(new Dimension(300, 35));
-		
-		pNorth.add(btBack);
-		pNorth.add(lbTitle);
-		pNorth.add(btNext);
-		pSouth.add(my,BorderLayout.EAST);
-		add(pNorth, BorderLayout.NORTH);
-        add(pCenter);
-		add(pSouth,BorderLayout.SOUTH);
-		//이전 버튼을 눌렀을 때 전 월로 이동해야함
-		btBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				updateMonth(-1);
-				
-			}
-		});
-		
-		//다음 버튼을 눌렀을 때 다음 달로 이동해야함
-		btNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				updateMonth(1);
-			
-			}
-		});
-		jButton = new JButton();
-		jButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				createDate();
-			}
-		});
-		
-		my.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showMy();
-			}
-		});
-		
-		getCurrentDate(); 
-		getDateInfo(); 
-		setDateTitle(); 
-		createDay(); 
-		createDate();
-		printDate(); 
-		showMy();
-		
-		setTitle("캘린더");
-		setVisible(true);
-		setBounds(400, 0, 780, 1000);
-	}
-	
-	//현재날짜 객체 만들기
-	public void getCurrentDate() {
-		cal = Calendar.getInstance();
-	}
-	
-	public void getDateInfo() {
-		yy = cal.get(Calendar.YEAR);
-		mm = cal.get(Calendar.MONTH);
-		startDay = getFirstDayOfMonth(yy, mm);
-		lastDate = getLastDate(yy, mm);
-	}
-	
+public class Diary extends JFrame implements ItemListener, ActionListener{
+	 Font fnt = new Font("SansSerif", Font.BOLD, 20); //★글씨체 통일감이 좋겠죠?
 
-	
-	//요일 생성
-	public void createDay() {
-		for(int i = 0; i < 7; i++){
-			DateBox dayBox = new DateBox(dayAr[i], Color.pink, 100, 70);
-			pCenter.add(dayBox);
+	    // 상단 년,월 달력옮기기 부분
+	    JPanel selectPane = new JPanel(); 
+	    
 
-		}
-	}
-	
-	//날짜 생성
-	public void createDate() {
-		
-		for(int i = 0; i < dayAr.length*5; i++) {
-			DateBox dateBox = new DateBox("", Color.white, 100, 100);
-			
-			
-			dateBoxAr[i] = dateBox;
-			jButton.setPreferredSize(new Dimension(100,100));
-			jButton.setText("");
-			
-			}
-		
-		}
-	
-	
-	//해당 월의 시작 요일 구하기
-	public int getFirstDayOfMonth(int yy, int mm) {
-		Calendar cal = Calendar.getInstance(); 
-		cal.set(yy, mm, 1);
-		return cal.get(Calendar.DAY_OF_WEEK)-1;
-	}
-	
-	public int getLastDate(int yy, int mm) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(yy, mm+1, 0);
-		return cal.get(Calendar.DATE);
-	}
-	
-	//날짜 박스에 날짜 출력하기
-	public void printDate() {
-		
-		int n = 1;
-		for(int i = 0; i < dateBoxAr.length; i++) {
-			
-				
+	    JButton prevBtn = new JButton("◀");
+	    JButton nextBtn = new JButton("▶");
+	    JComboBox<Integer> yearCombo = new JComboBox<Integer>(); 
+	    JComboBox<Integer> monthCombo = new JComboBox<Integer>(); 
+	    JLabel yearLBl = new JLabel("년");
+	    JLabel monthLBl = new JLabel("월");
 
-			if(i >= startDay && n <= lastDate) {
-				dateBoxAr[i].day = Integer.toString(n);
-				dateBoxAr[i].repaint();
-				JButton jButton = new JButton(i+"일");
-				pCenter.add(jButton);
-				jButton.setPreferredSize(new Dimension(100,100));
-				n++;
-			}else {
-				dateBoxAr[i].day = "";
-				dateBoxAr[i].repaint();
-				JButton jButton = new JButton();
-				pCenter.add(jButton);
-				jButton.setPreferredSize(new Dimension(100,100));
-				
-			}
-			 
-		}
-	}
-	
-	public void dayButton() {
-		btBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				pCenter.remove(jButton);
-			    pCenter.revalidate();
-			    pCenter.repaint();
-			}
-		});
-		
-		//다음 버튼을 눌렀을 때 다음 달로 이동해야함
-		btNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				pCenter.remove(jButton);
-			    pCenter.revalidate();
-			    pCenter.repaint();
-			}
-		});
-	}
-	//달력을 넘기거나 전으로 이동할 때 날짜 객체에 대한 정보도 변경
-	public void updateMonth(int data) {
-		//캘린더 객체에 들어있는 날짜를 기준으로 월 정보를 바꿔준다.
-		cal.set(Calendar.MONTH, mm+data);
-		getDateInfo();
-		printDate();
-		setDateTitle();
-	}
-	
-	//몇년도 몇월인지를 보여주는 타이틀 라벨의 값을 변경
-	public void setDateTitle() {
-		lbTitle.setText(yy+"년 "+(mm+1)+"월");
-		lbTitle.updateUI();
-	}
-	
-	public void showMy() {
-			DateBox db = new DateBox("My", Color.pink,100 , 100);
-			DateBox db2 = new DateBox("", Color.white,600 , 300);
-			pSouth.add(db2,BorderLayout.WEST);
-			pSouth.add(db,BorderLayout.EAST);
-			my.setPreferredSize(new Dimension(100,100));
+	    // 날짜,요일부분 관련 
+	    JPanel centerPane = new JPanel(new BorderLayout()); 
+	    JPanel titlePane = new JPanel(new GridLayout(1, 7));
+	    String[] title = {"일", "월", "화", "수", "목", "금", "토"};
+	    JPanel dayPane = new JPanel(new GridLayout(0, 7)); 
+	    
+	    
+	    
+	  
+	    JPanel my = new JPanel();
+	    public void my() {
+	    	
+	    }
+	  
+	    //달력 관련
+	    Calendar calendar;
+	    int year;
+	    int month;
 
-//		JDialog dialog = new JDialog(this,"My",true);
-//		dialog.setBounds(200,50,500,500);
-//		
-//		dialog.add(pSouth);
-//		dialog.setVisible(true);
-	}
-	
-	
-	
-	
+	    //날짜 클릭 시 팝업 관련
+	    JPanel dialPane = new JPanel();
+	    JRadioButton rb1 = new JRadioButton("입금");
+	    JRadioButton rb2 = new JRadioButton("출금");
+	    ButtonGroup rbGroup = new ButtonGroup();//그래야 둘중 하나만 선택?일듯? 라벨add는 setDay메서드에서 
+	    
+	    
+	    
+	    public Diary() {
+	        super("캘린더"); 
+	        calendar = Calendar.getInstance();
+	        year = calendar.get(Calendar.YEAR); 
+	        month = calendar.get(Calendar.MONTH)+1; //month 0부터 시작
+
+	        //상단 위치배정이랑 디자인부분
+	        selectPane.setBackground(new Color(255, 193, 204));  // ★폰트, 컬러는 디자인부분이니 나중에 같이 상의해주세욥
+	        selectPane.add(prevBtn); prevBtn.setFont(fnt);
+	        selectPane.add(yearCombo); yearCombo.setFont(fnt);
+	        selectPane.add(yearLBl); yearLBl.setFont(fnt);
+	        selectPane.add(monthCombo); monthCombo.setFont(fnt);
+	        selectPane.add(monthLBl); monthLBl.setFont(fnt);
+	        selectPane.add(nextBtn); nextBtn.setFont(fnt);  
+
+	        add(BorderLayout.NORTH, selectPane); 
+	        
+	        my.setBackground(Color.lightGray);
+	        add(my, BorderLayout.SOUTH);
+	        my.setPreferredSize(new Dimension(600, 250));
+	       
+	        
+	        //현재 년, 월 세팅
+	        setYear();
+	        setMonth();
+
+	        //title요일 호출
+	        setCalendarTitle();     // 월~일보여지는 메서드
+	        centerPane.add(BorderLayout.NORTH, titlePane);   
+	        add(centerPane);
+
+	        //날짜만들기
+	        centerPane.add(dayPane); 
+	        setDay();   
+
+
+	        //---------------------------기능이벤트를 추가-------------------------------
+	        prevBtn.addActionListener(this);
+	        nextBtn.addActionListener(this);
+	        //년월 이벤트 다시등록
+	        yearCombo.addItemListener(this);
+	        monthCombo.addItemListener(this);
+
+	        //JFrame의 설정들
+	        setBounds(450,50,600,700); // ★로그인 창 바운즈 알려주세요 맞출게요
+	        setVisible(true);
+	        
+	        //  ★클로즈 되는건 조장이 정해주세요 어느시점에서 클로즈 될런지
+	    
+	    }
+	    
+	    public void mouseEntered(MouseEvent e) {
+	    	
+	    }
+	    
+	    //날짜셋팅
+	    public void setDay() {
+	        //요일
+	        calendar.set(year, month-1, 1); 
+	        int week = calendar.get(Calendar.DAY_OF_WEEK); 
+	        //마지막날
+	        int lastDay = calendar.getActualMaximum(Calendar.DATE); 
+	      
+	        
+	        //시작일을 맞추기 위한 빈공간    ★ 더 좋은 코드가 있을거같으면 얘기해주세욥..
+	        for(int s=1; s<week; s++) { 
+	            JLabel lbl = new JLabel(""); 
+	            dayPane.add(lbl);
+	        }
+	        //날짜추가
+	        for(int day=1; day<=lastDay; day++) {
+	            JLabel lbl = new JLabel(String.valueOf(day), JLabel.CENTER);
+	            lbl.setVerticalAlignment(SwingConstants.TOP);
+	            lbl.setHorizontalAlignment(SwingConstants.LEFT);
+	            //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
+	            
+	            int finalDay = day;
+	            lbl.addMouseListener(new MouseAdapter() {
+	                @Override
+	                public void mouseClicked(MouseEvent e) {
+	                    calendar.set(Calendar.DATE, finalDay); 
+	                    int year = calendar.get(Calendar.YEAR);
+	                    int month = calendar.get(Calendar.MONTH) + 1; 
+	                    int clickedDay = calendar.get(Calendar.DAY_OF_MONTH);
+	                    rbGroup.add(rb1); rbGroup.add(rb2);
+	                    dialPane.add(rb1); dialPane.add(rb2);
+	                    
+	                    // 입출금 선택창이랑 선택 후 창 부분
+	                   int result = JOptionPane.showOptionDialog(
+	                		   Diary.this,
+	                		   dialPane,
+	                		   "입출금",
+	                		   JOptionPane.OK_CANCEL_OPTION, //버튼종류
+	                		   JOptionPane.PLAIN_MESSAGE, 
+	                		   null, //기본아이콘
+	                		   null, //버튼커스텀아이콘
+	                		   null);//기본값(null인 경우 첫 번째 버튼이 기본값)
+	             
+	                //여기는 조장이..!!!!
+	                if (result == JOptionPane.OK_OPTION) {
+	                    if (rb1.isSelected()) {
+	                        JOptionPane.showMessageDialog(Diary.this, "입금창");
+	                    } else if (rb2.isSelected()) {
+	                        JOptionPane.showMessageDialog(Diary.this, "출금창");
+	                    }
+	                }
+	                
+	                } 
+	                @Override
+	                public void mouseEntered(MouseEvent e) {
+	                    super.mouseEntered(e);
+	                    lbl.setBackground(Color.pink);
+	                }
+
+	                @Override
+	                public void mouseExited(MouseEvent e) {
+	                    super.mouseExited(e);
+	                    lbl.setBackground(null);
+	                }
+	            });
+	            //출력하는 날짜에 대한 요일
+	            calendar.set(Calendar.DATE, day); 
+	            int w = calendar.get(Calendar.DAY_OF_WEEK); 
+	            if (w == 1) lbl.setForeground(Color.red); 
+	            if (w == 7) lbl.setForeground(Color.blue); 
+	            lbl.setOpaque(true);
+	            dayPane.add(lbl);
+	        }
+	    }
+	    //월화수목금토일 설정
+	    public void setCalendarTitle() { 
+	        for(int i =0; i <title.length; i++) { 
+	            JLabel lbl = new JLabel(title[i], JLabel.CENTER); //가운데정렬
+	            lbl.setFont(fnt); 
+	            if(i ==0) lbl.setForeground(Color.red); 
+	            if(i ==6) lbl.setForeground(Color.blue);
+	            titlePane.add(lbl); 
+	        }
+	    }
+	    //년도세팅
+	    public void setYear() {
+	        for(int i= year-50; i<year+20; i++) { 
+	            yearCombo.addItem(i); 
+	        }
+	        yearCombo.setSelectedItem(year); 
+	    }
+	    //월세팅
+	    public void setMonth() {
+	        for(int i=1; i<=12; i++) {
+	            monthCombo.addItem(i);
+	        }
+	        monthCombo.setSelectedItem(month); 
+	    }
+
+	    //콤보박스클릭이벤트
+	    public void itemStateChanged(ItemEvent e) { //콤보박스를 변경하였을때에 선택되는 이벤트
+	        year = (int)yearCombo.getSelectedItem(); 
+	        month = (int)monthCombo.getSelectedItem();
+
+	        dayPane.setVisible(false); 
+	        dayPane.removeAll(); //원래있는 날짜 지우기
+	        setDay(); 
+	        dayPane.setVisible(true); 
+
+	        //여기서 닫고 지웠다가 호출하고, 다시 보여주는 이유는  안그러면 화면이 지워지지않아서
+
+	    }
+	    //버튼이벤트
+	    public void actionPerformed(ActionEvent ae) {  //액션이벤트(버튼이벤트)
+	        Object obj = ae.getSource(); 
+	        if(obj == prevBtn) {//이전버튼을 눌렀을때
+	            //이전월을 눌렀을때
+	            prevMonth(); //이전버튼메소드호출
+	            setDayReset(); 
+	            }else if(obj == nextBtn) { //이후 버튼을 눌렀을때
+	            //다음월을 눌렀을떄
+	            nextMonth(); 
+	            setDayReset(); 
+	        }else if(obj == dayPane) {
+	            JOptionPane.showInputDialog("현재 년월일");
+	        }
+	    }
+	    private void setDayReset() {
+	        //년월 이벤트 등록해제
+	        yearCombo.removeItemListener(this); //등록이벤트를 해제시켜주고
+	        monthCombo.removeItemListener(this);
+
+	        yearCombo.setSelectedItem(year); 
+	        monthCombo.setSelectedItem(month);
+
+	        dayPane.setVisible(false); 
+	        dayPane.removeAll(); 
+	        setDay(); 
+	        dayPane.setVisible(true); 
+
+	        yearCombo.addItemListener(this); 
+	        monthCombo.addItemListener(this); 
+	        
+
+	    }
+	    public void prevMonth() { //월
+	        if(month==1) { //21.01월 일때에 12월로 떨어지면서 year를 전년도로 바꿈
+	            year--;
+	            month=12;
+	        }else { //그외의 경우
+	            month--;
+	        }
+	    }
+	    public void nextMonth() {
+	        if(month==12){ //12월일때에는 년도를 추가시키고 월을 1로 바꿈
+	            year++;
+	            month=1;
+	        }else{ //그외의 경우
+	            month++;
+	        }
+	    }
+	    
+
+	    
+	            
+	        
+	    
+
+	   
 }
