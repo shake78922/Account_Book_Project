@@ -160,7 +160,7 @@ public class DBuser {
 			boolean ap = false;
 			try {
 				cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-				String sql = "insert into accounts (cash,account1,ID) value(?,?,?)";
+				String sql = "UPDATE accounts SET cash = ?, account1 = ? WHERE ID = ?";
 				stmt = cnn.prepareStatement(sql);
 				stmt.setInt(1, cash);
 				stmt.setInt(2, account1);
