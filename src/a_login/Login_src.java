@@ -58,7 +58,7 @@ public class Login_src {
 				if(du.findID(loginId) && du.findPW(loginPw)) {
 					JOptionPane.showMessageDialog(null, "로그인 성공");
 					f.dispose();
-					MyProfileMenu mu = new MyProfileMenu();
+					MyProfileMenu mu = new MyProfileMenu(loginId);
 				}else {
 					JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 찾을 수 없습니다.");
 				}

@@ -18,10 +18,12 @@ import javax.swing.JTextField;
 import accountBook1.*;
 
 public class MyProfileMenu {
+	private String id; //로그인한 아이디 저장 필드
+	DBuser db = new DBuser();
 	
 	
-	
-	public MyProfileMenu() {
+	public MyProfileMenu(String id) {
+		this.id = id; // 로그인한 사용자 아이디 저장
 		JFrame profileMenu = new JFrame("Profile");
 		profileMenu.setLayout(null);
 		String background = "src/Images/MENU-3.png"; //백그라운드 이미지 url
@@ -101,8 +103,37 @@ public class MyProfileMenu {
 					}
 				});
 				accountField.setBounds(165, 145, 100, 30);
+				JButton save = new JButton("저장");
+				save.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if(cashMoney.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "값을 입력해 주세요.");
+							return;
+						}
+						if(accountField.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "값을 입력해 주세요.");
+							return;
+						}
+						
+							int cashInt = Integer.parseInt(cashMoney.getText());
+							int accountInt = Integer.parseInt(accountField.getText());
+							db.insertCash(cashInt,accountInt, id);
+						
+						
+					}
+				});
 				
 				
+				
+				
+				
+				
+				
+				
+				save.setBounds(170, 300, 60, 40);
+				accountMenuBackground.add(save);
 				cash.setBounds(130, 100, 30, 20);
 				cash.setForeground(Color.white);
 				cash.setFont(cash.getFont().deriveFont(15.0f));
@@ -143,9 +174,6 @@ public class MyProfileMenu {
 		profileMenu.setVisible(true);
 		profileMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-	}
-	public static void main(String[] args) {
-		MyProfileMenu mm = new MyProfileMenu();
 	}
 }
 

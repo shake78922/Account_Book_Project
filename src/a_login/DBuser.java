@@ -156,17 +156,23 @@ public class DBuser {
 			return overlap;
 		}
 		
-		public void insertCash(int cash, int account1) {
+		public void insertCash(int cash, int account1,String ID) {
 			boolean ap = false;
 			try {
 				cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-				String sql = "insert into accounts values(?,?)";
+				String sql = "UPDATE accounts SET cash = ?, account1 = ? WHERE ID = ?";
 				stmt = cnn.prepareStatement(sql);
 				stmt.setInt(1, cash);
 				stmt.setInt(2, account1);
+				stmt.setString(3, ID);
 				int rs = stmt.executeUpdate();
+				if(rs == 1) {
+					System.out.println("데이터 삽입 성공");
+				}else {
+					System.out.println("실패");
+				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				System.out.println("오류"+e);
 			}
 			
 		
