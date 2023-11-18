@@ -1,6 +1,8 @@
 package accountBook1;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -12,9 +14,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 // icon images @ fontawesome.com
@@ -24,56 +28,88 @@ import javax.swing.JTextField;
 public class Deposits extends JFrame implements ItemListener, ActionListener{
 	Font fnt_title = new Font("SansSerif", Font.BOLD, 16);
 	Font fnt_regular = new Font("SansSerif", Font.PLAIN, 14);
+	
+	JPanel topPanel = new JPanel();
+	JPanel bottomPanel = new JPanel();
 	public Deposits(int year, int month, int clickedDay) {
 		super("입금");
-		setLayout(null);
+		
+		// ======= 상단패널 ========
 		
 		// 날짜 아이콘
 		String calImg = "src/Images/calendar20.png";
 		JLabel calLabel = new JLabel(new ImageIcon(calImg));
 		calLabel.setBounds(0,0,50,50);
-		add(calLabel);
+
 		// 날짜 라벨
 		JLabel dateLabel = new JLabel(String.format("%d년 %d월 %d일", year, month, clickedDay));
 		dateLabel.setBounds(47,0,400,50);
 		dateLabel.setFont(fnt_regular);
-		add(dateLabel);
 		
-		// ==============
+		// -------
 		
 		// 입금 금액 아이콘
 		String amountImg = "src/Images/won_sign20.png";
 		JLabel amountLabel = new JLabel(new ImageIcon(amountImg));
 		amountLabel.setBounds(0,45,50,50);
-		add(amountLabel);
+
 		//입금 금액 텍스트필드
 		JTextField amountTf = new HintTextField("입금할 금액");
 		amountTf.setBounds(45,55,150,30);
 		amountTf.setFont(fnt_regular);
-		add(amountTf);
 		
-		// ==============
+		// -------
 		
 		// 상세내역 아이콘
 		String descriptionImg = "src/Images/description20.png";
 		JLabel descriptionLabel = new JLabel(new ImageIcon(descriptionImg));
 		descriptionLabel.setBounds(0,90,50,50);
-		add(descriptionLabel);
+
 		// 상세 내역 텍스트필드
-		JTextField descriptionTf = new HintTextField("상세 내역 입력");
+		JTextField descriptionTf = new HintTextField("상세 내역");
 		descriptionTf.setBounds(45,100,400,30);
 		descriptionTf.setFont(fnt_regular);
-		add(descriptionTf);
+		
+		// -------
+		
+		// 상단 패널 레이아웃
+		GroupLayout layout = new GroupLayout(topPanel);
+		topPanel.setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		layout.setHorizontalGroup(
+				   layout.createSequentialGroup()
+				   		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				   				.addComponent(calLabel)
+				   				.addComponent(amountLabel)
+				   				.addComponent(descriptionLabel))
+				   		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				   				.addComponent(dateLabel)
+				   				.addComponent(amountTf)
+				   				.addComponent(descriptionTf))
+				);
+		layout.setVerticalGroup(
+				   layout.createSequentialGroup()
+				      	.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				      			.addComponent(calLabel)
+				      			.addComponent(dateLabel))
+		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+		      					.addComponent(amountLabel)
+						        .addComponent(amountTf))
+		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+		      					.addComponent(descriptionLabel)
+						        .addComponent(descriptionTf))
+				);
+		
+		add(BorderLayout.NORTH, topPanel);
+		
+		// ======= 하단 패널 =======
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		setBounds(1100,100,500,500);
+
+		setSize(400,400);
+		setLocationRelativeTo(null);
         setVisible(true);
 	}
 

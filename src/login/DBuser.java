@@ -11,7 +11,7 @@ public class DBuser {
 	ResultSet rs = null;
 	String dbUrl = "jdbc:mysql://localhost:3306/account";
 	String dbUser = "root";
-	String dbPassword = "!@Arhwe2";
+	String dbPassword = "1234";
 	
 	
 	//회원 가입 로직
