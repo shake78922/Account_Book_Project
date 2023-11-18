@@ -1,12 +1,28 @@
 package accountBook1;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Calendar;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 //  ★ 색감을 로그인창이랑 맞추고싶긴한데...의견 주세요
 
@@ -27,7 +43,11 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     JPanel titlePane = new JPanel(new GridLayout(1, 7));
     String[] title = {"일", "월", "화", "수", "목", "금", "토"};
     JPanel dayPane = new JPanel(new GridLayout(0, 7)); 
-
+    
+    //상세내역 메모부분 관련
+    JPanel memoPane = new JPanel();
+    JLabel detailMemoLBl = new JLabel();
+    
     //달력 관련
     Calendar calendar;
     int year;
@@ -65,14 +85,20 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
 
         //title요일 호출
         setCalendarTitle();     // 월~일보여지는 메서드
-        centerPane.add(BorderLayout.NORTH, titlePane);   
+        centerPane.add(BorderLayout.NORTH, titlePane);
         add(centerPane);
 
         //날짜만들기
         centerPane.add(dayPane); 
         setDay();   
 
-
+        //메모구역만들기
+        memoPane.setBorder(new TitledBorder(new LineBorder(Color.black,3),"<상세내역>"));
+        memoPane.add(detailMemoLBl);
+        add(memoPane, BorderLayout.SOUTH);
+        memoPane.setPreferredSize(new Dimension(600, 150));
+        //detailMemo();
+        
         //---------------------------기능이벤트를 추가-------------------------------
         prevBtn.addActionListener(this);
         nextBtn.addActionListener(this);
@@ -81,7 +107,8 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         monthCombo.addItemListener(this);
 
         //JFrame의 설정들
-        setBounds(450,50,600,700); // ★로그인 창 바운즈 알려주세요 맞출게요
+        setSize(600,700); // ★로그인 창 바운즈 알려주세요 맞출게요
+        setLocationRelativeTo(null); // 윈도우화면에 가운데 정렬 팝업
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -97,16 +124,17 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         //마지막날
         int lastDay = calendar.getActualMaximum(Calendar.DATE); 
         
-        //시작일을 맞추기 위한 빈공간    ★ 더 좋은 코드가 있을거같으면 얘기해주세욥..
+        //시작일을 맞추기 위한 빈공간   
         for(int s=1; s<week; s++) { 
             JLabel lbl = new JLabel(""); 
             dayPane.add(lbl);
         }
         //날짜추가
         for(int day=1; day<=lastDay; day++) {
-            JLabel lbl = new JLabel(String.valueOf(day), JLabel.CENTER); 
-            //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
-            lbl.setHorizontalAlignment(SwingConstants.LEFT);
+        	JLabel lbl = new JLabel(String.valueOf(day)); 
+        	lbl.setVerticalAlignment(SwingConstants.TOP);
+        	lbl.setHorizontalAlignment(SwingConstants.LEFT);
+         
             int finalDay = day;
             lbl.addMouseListener(new MouseAdapter() {
                 @Override
@@ -121,9 +149,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                     
                     // 입출금 선택창이랑 선택 후 창 부분
                    int result = JOptionPane.showOptionDialog(
-                		   DiaryFinal.this,
+                		   DiaryFinal.this, // 프레임
                 		   dialPane,
-                		   "입출금",
+                		   "입출금",  //제목
                 		   JOptionPane.OK_CANCEL_OPTION, //버튼종류
                 		   JOptionPane.PLAIN_MESSAGE, 
                 		   null, //기본아이콘
@@ -135,21 +163,25 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                     if (rb1.isSelected()) {
                         //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
                     	Deposits d = new Deposits(year, month, clickedDay);
+                        //입금창 메서드나 클래스 호출 후
+                        //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
+                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
+
                     } else if (rb2.isSelected()) {
-                        //JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
+
+                        JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
+                        //위와 동일하지만 출금창으로
                     }
                 }
                 
                 } 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    super.mouseEntered(e);
-                    lbl.setBackground(Color.pink);
+                    lbl.setBackground(new Color(255, 193, 204));
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    super.mouseExited(e);
                     lbl.setBackground(null);
                 }
             });
@@ -165,7 +197,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     //월화수목금토일 설정
     public void setCalendarTitle() { 
         for(int i =0; i <title.length; i++) { 
-            JLabel lbl = new JLabel(title[i], JLabel.CENTER); //가운데정렬
+            JLabel lbl = new JLabel(title[i], JLabel.CENTER); 
             lbl.setFont(fnt); 
             if(i ==0) lbl.setForeground(Color.red); 
             if(i ==6) lbl.setForeground(Color.blue);
@@ -186,7 +218,13 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         }
         monthCombo.setSelectedItem(month); 
     }
-
+    
+    
+    
+    
+    
+    
+    
     //콤보박스클릭이벤트
     public void itemStateChanged(ItemEvent e) { //콤보박스를 변경하였을때에 선택되는 이벤트
         year = (int)yearCombo.getSelectedItem(); 
@@ -197,7 +235,6 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         setDay(); 
         dayPane.setVisible(true); 
 
-        //여기서 닫고 지웠다가 호출하고, 다시 보여주는 이유는  안그러면 화면이 지워지지않아서
 
     }
     //버튼이벤트
@@ -215,7 +252,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
             JOptionPane.showInputDialog("현재 년월일");
         }
     }
-    private void setDayReset() {
+    private void setDayReset() { ////
         //년월 이벤트 등록해제
         yearCombo.removeItemListener(this); //등록이벤트를 해제시켜주고
         monthCombo.removeItemListener(this);
