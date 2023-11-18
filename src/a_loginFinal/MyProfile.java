@@ -6,16 +6,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.print.attribute.standard.MediaSize.Engineering;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import a_loginFinal.SessionManager;
 import accountBook1.*;
 
 public class MyProfile {
@@ -120,7 +117,7 @@ public class MyProfile {
 							int cashInt = Integer.parseInt(cashMoney.getText());
 							int accountInt = Integer.parseInt(accountField.getText());
 							DB db = new DB();
-							db.insertMoney(cashInt, accountInt, sm.getID());
+							db.updateMoney(cashInt, accountInt, sm.getID());
 						
 						
 					}

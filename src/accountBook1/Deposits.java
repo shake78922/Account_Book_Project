@@ -214,7 +214,7 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == confirmButton) {
-			depositData = new String[6];
+			depositData = new String[7];
 			depositData[0] = year;
 			depositData[1] = month;
 			depositData[2] = clickedDay;

@@ -100,7 +100,7 @@ public class DB {
         return name;
     }
     
-    public void insertMoney(int cash, int account1, String ID) {
+    public void updateMoney(int cash, int account1, String ID) {
         try {
             cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             String sql = "UPDATE accounts SET cash = ?, account1 = ? WHERE ID = ?";
@@ -119,6 +119,44 @@ public class DB {
         } finally {
             closeResources();
         }
+    }
+    
+    public int getCashbyID(String ID) {
+    	int cash = 0;
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "SELECT cash FROM accounts WHERE ID = ?";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, ID);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                cash = rs.getInt("cash");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return cash;
+    }
+    
+    public int getAccount1byID(String ID) {
+    	int account1 = 0;
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "SELECT account1 FROM accounts WHERE ID = ?";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, ID);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                account1 = rs.getInt("account1");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return account1;
     }
 
     
