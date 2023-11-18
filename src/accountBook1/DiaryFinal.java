@@ -105,32 +105,8 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         memoPane.setPreferredSize(new Dimension(600, 150));
         //detailMemo();
         
-        // 상단메뉴바
-		JMenu jmu1 = new JMenu("파일");
-		JMenu jmu2 = new JMenu("편집");
-		JMenu jmu3 = new JMenu("보기");
-		
-		JMenuItem jmi1 = new JMenuItem("새로 만들기");
-		JMenuItem jmi2 = new JMenuItem("열기");
-		JMenuItem jmi3 = new JMenuItem("저장");
-		
-		jmu1.add(jmi1);
-		jmu1.add(jmi2);
-		jmu1.add(jmi3);
-		
-		JMenuItem jmi4 = new JMenuItem("잘라내기");
-		JMenuItem jmi5 = new JMenuItem("복사");
-		JMenuItem jmi6 = new JMenuItem("붙여넣기");
-		
-		jmu2.add(jmi4);
-		jmu2.add(jmi5);
-		jmu2.add(jmi6);
-		
-		jmb.add(jmu1);
-		jmb.add(jmu2);
-		jmb.add(jmu3);
-		
-		setJMenuBar(jmb);
+        // 상단메뉴바 세팅
+        setMenuBar();
         
         //---------------------------기능이벤트를 추가-------------------------------
         prevBtn.addActionListener(this);
@@ -191,21 +167,21 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                 		   null, //버튼커스텀아이콘
                 		   null);//기본값(null인 경우 첫 번째 버튼이 기본값)
              
-                //여기는 조장이..!!!!
-                if (result == JOptionPane.OK_OPTION) {
-                    if (rb1.isSelected()) {
-                        //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
-                    	Deposits d = new Deposits(year, month, clickedDay);
-                        //입금창 메서드나 클래스 호출 후
-                        //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
-                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
-
-                    } else if (rb2.isSelected()) {
-
-                        JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
-                        //위와 동일하지만 출금창으로
-                    }
-                }
+                   //여기는 조장이..!!!!
+	                if (result == JOptionPane.OK_OPTION) {
+	                    if (rb1.isSelected()) {
+	                        //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
+	                    	Deposits d = new Deposits(year, month, clickedDay);
+	                        //입금창 메서드나 클래스 호출 후
+	                        //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
+	                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
+	
+	                    } else if (rb2.isSelected()) {
+	
+	                        JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
+	                        //위와 동일하지만 출금창으로
+	                    }
+	                }
                 
                 } 
                 @Override
@@ -250,6 +226,34 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
             monthCombo.addItem(i);
         }
         monthCombo.setSelectedItem(month); 
+    }
+    
+    public void setMenuBar() {
+		JMenu jmu1 = new JMenu("파일");
+		JMenu jmu2 = new JMenu("편집");
+		JMenu jmu3 = new JMenu("보기");
+		
+		JMenuItem jmi1 = new JMenuItem("새로 만들기");
+		JMenuItem jmi2 = new JMenuItem("열기");
+		JMenuItem jmi3 = new JMenuItem("저장");
+		
+		jmu1.add(jmi1);
+		jmu1.add(jmi2);
+		jmu1.add(jmi3);
+		
+		JMenuItem jmi4 = new JMenuItem("잘라내기");
+		JMenuItem jmi5 = new JMenuItem("복사");
+		JMenuItem jmi6 = new JMenuItem("붙여넣기");
+		
+		jmu2.add(jmi4);
+		jmu2.add(jmi5);
+		jmu2.add(jmi6);
+		
+		jmb.add(jmu1);
+		jmb.add(jmu2);
+		jmb.add(jmu3);
+		
+		setJMenuBar(jmb);
     }
     
     

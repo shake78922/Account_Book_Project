@@ -1,4 +1,4 @@
-package login;
+package a_login;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +11,7 @@ public class DBuser {
 	ResultSet rs = null;
 	String dbUrl = "jdbc:mysql://localhost:3306/account";
 	String dbUser = "root";
-	String dbPassword = "1234";
+	String dbPassword = "!@Arhwe2";
 	
 	
 	//회원 가입 로직
