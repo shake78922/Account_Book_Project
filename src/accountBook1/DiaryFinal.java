@@ -31,7 +31,7 @@ import javax.swing.border.TitledBorder;
 
 public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     Font fnt = new Font("SansSerif", Font.BOLD, 20); //★글씨체 통일감이 좋겠죠?
-    
+    Font fnt_regular = new Font("SansSerif", Font.PLAIN, 14);
     // 상단 년,월 달력옮기기 부분
     JPanel selectPane = new JPanel(); 
     JButton prevBtn = new JButton("◀");
@@ -66,7 +66,6 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     ButtonGroup rbGroup = new ButtonGroup();//그래야 둘중 하나만 선택?일듯? 라벨add는 setDay메서드에서 
     
     
-    
     public DiaryFinal() {
         super("캘린더"); 
         calendar = Calendar.getInstance();
@@ -83,7 +82,6 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         selectPane.add(nextBtn); nextBtn.setFont(fnt);  
 
         add(BorderLayout.NORTH, selectPane); 
-        
 
         //현재 년, 월 세팅
         setYear();
@@ -107,6 +105,8 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         
         // 상단메뉴바 세팅
         setMenuBar();
+        
+        
         
         //---------------------------기능이벤트를 추가-------------------------------
         prevBtn.addActionListener(this);
@@ -172,6 +172,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
 	                    if (rb1.isSelected()) {
 	                        //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
 	                    	Deposits d = new Deposits(year, month, clickedDay);
+	                    	d.getDepositData();
 	                        //입금창 메서드나 클래스 호출 후
 	                        //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
 	                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
@@ -186,12 +187,16 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                 } 
                 @Override
                 public void mouseEntered(MouseEvent e) {
+                	super.mouseEntered(e);
                     lbl.setBackground(new Color(255, 193, 204));
+                    MyPayment(finalDay);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    lbl.setBackground(null);
+                	super.mouseExited(e);
+                	lbl.setBackground(null);
+                    MyPaneltxt();
                 }
             });
             //출력하는 날짜에 대한 요일
@@ -321,6 +326,21 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         }else{ //그외의 경우
             month++;
         }
+    }
+    
+  //my패널에 입출금 글자 띄우기
+    public void MyPayment(int day) {
+        memoPane.removeAll(); 
+        JLabel myLabel = new JLabel(day + "일\n 입금 : ");
+        memoPane.add(myLabel);
+        memoPane.revalidate();
+        myLabel.setFont(fnt_regular);
+    }
+
+    //my패널에 원래있던 글자 삭제하고 다시 띄우기
+    public void MyPaneltxt() {
+    	memoPane.removeAll(); 
+    	memoPane.revalidate();
     }
 }
 
