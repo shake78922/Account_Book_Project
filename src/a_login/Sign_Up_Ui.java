@@ -1,4 +1,4 @@
-package login;
+package a_login;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -13,9 +13,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class Sign_Up_Ui {
+	DBuser db = new DBuser();
+	private boolean idCheck = false;
 	
-	public JFrame signUp() {
-		DBuser db = new DBuser();
+	public JFrame signUp(JButton btn) {
 		JFrame sigf = new JFrame("회원가입");
 		sigf.setLayout(null);
 		String img = "src/Images/Login5-2.png";
@@ -34,11 +35,6 @@ public class Sign_Up_Ui {
 		JLabel NAME = new JLabel("이름");
 		JTextField id = new JTextField(20);
 		NAME.setFont(NAME.getFont().deriveFont(18.0f));
-//		JLabel TEL = new JLabel("전화번호");
-//		JTextField tel = new JTextField();
-//		TEL.setFont(TEL.getFont().deriveFont(18.0f));
-//		TEL.setBounds(120, 340, 100, 50);
-//		tel.setBounds(190, 350, 130, 30);
 		JLabel ID = new JLabel("ID");
 		JPasswordField pw1 = new JPasswordField(20);
 		JLabel PW1 = new JLabel("비밀번호");
@@ -72,6 +68,7 @@ public class Sign_Up_Ui {
 					res.setText("중복된 아이디 입니다.");
 				}else {
 					res.setText("사용가능한 아이디 입니다.");
+					idCheck = true;
 				}
 				
 			}
@@ -91,12 +88,39 @@ public class Sign_Up_Ui {
 				char[] overlapPw2 = pw2.getPassword();
 				String ovPw1 = new String(overlapPw1);
 				String ovPw2 = new String(overlapPw2);
+				
+				
+				if(!idCheck) {
+					JOptionPane.showMessageDialog(null, "ID중복을 확인해 주세요.");
+					return;
+				}
+				if(id.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "아이디를 입력해 주세요.");
+					return;
+				}
+				if(name.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "이름을 입력해 주세요.");
+					return;
+				}
+				if(ovPw1.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "비밀번호를 입력해 주세요.");
+					return;
+				}
+				if(ovPw2.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "비밀번호를 입력해 주세요.");
+					return;
+				}
 				if(ovPw1.equals(ovPw2)) {
 					db.join_membership(id1, ovPw1, name1);
-					JOptionPane.showMessageDialog(sigf,"환영합니다.");
+					Login_src ls = new Login_src();
+					JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다 !");
+					sigf.dispose();
+					
 				}else {
-					JOptionPane.showMessageDialog(sigf, "비밀번호가 일치하지 않습니다.");
+					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
 				}
+			
+				
 				
 			}
 		});
@@ -134,18 +158,14 @@ public class Sign_Up_Ui {
 		
 		
 		
-		
+		sigf.setResizable(false);
 		sigf.setVisible(true);
 		sigf.setBounds(0, 0, 500, 728);
+		sigf.setLocationRelativeTo(null);
 		sigf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		return sigf;
 		
 	}
-	public static void main(String[] args) {
-		Sign_Up_Ui si = new Sign_Up_Ui();
-		si.signUp();
-	}
-	
 	
 }
