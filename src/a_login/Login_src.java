@@ -18,10 +18,10 @@ import javax.swing.JTextField;
 
 public class Login_src {
 	DBuser du = new DBuser();
+	private JFrame f = new JFrame();
 	
 	//프로그램 시작점.
 	public Login_src() {
-		JFrame f = new JFrame();
 		f.setLayout(null);
 		
 		//백그라운드 이미지
@@ -57,6 +57,8 @@ public class Login_src {
 				String loginPw = new String(pw.getPassword());
 				if(du.findID(loginId) && du.findPW(loginPw)) {
 					JOptionPane.showMessageDialog(null, "로그인 성공");
+					f.dispose();
+					MyProfileMenu mu = new MyProfileMenu();
 				}else {
 					JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 찾을 수 없습니다.");
 				}
@@ -82,10 +84,21 @@ public class Login_src {
 		
 		
 		
-		Sign_Up signUp = new Sign_Up();
-		jl.add(signUp.SignUp());
-		Unregister unSignUp = new Unregister();
-		jl.add(unSignUp.unSignUp());
+		
+		JButton signUp = new JButton("회원가입");
+		signUp.setBounds(220, 600, 80, 40);
+		signUp.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Sign_Up_Ui si = new Sign_Up_Ui();
+				si.signUp(signUp);
+				f.dispose();
+				
+				
+			}
+		});
+		jl.add(signUp);
 		
 		
 		
@@ -98,9 +111,13 @@ public class Login_src {
 		
 		
 		
-		f.setVisible(true);
+		
+		
+		f.setResizable(false);
 		f.setBounds(0, 0, 500, 728);
+		f.setLocationRelativeTo(null);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setVisible(true);
 			
 	}
 	

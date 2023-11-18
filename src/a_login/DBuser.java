@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.mysql.cj.jdbc.Driver;
+
 public class DBuser {
 	Connection cnn = null;
 	PreparedStatement stmt = null;
@@ -28,7 +30,7 @@ public class DBuser {
 					System.out.println("데이터삽입성공");
 				}
 			} catch (Exception e) {
-				System.out.println("오류");
+				System.out.println("오류"+e);
 			}finally {
 				try {
 					if(stmt != null) stmt.close();
@@ -152,6 +154,22 @@ public class DBuser {
 				}
 			}
 			return overlap;
+		}
+		
+		public void insertCash(int cash, int account1) {
+			boolean ap = false;
+			try {
+				cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+				String sql = "insert into accounts values(?,?)";
+				stmt = cnn.prepareStatement(sql);
+				stmt.setInt(1, cash);
+				stmt.setInt(2, account1);
+				int rs = stmt.executeUpdate();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		
 		}
 		
 		

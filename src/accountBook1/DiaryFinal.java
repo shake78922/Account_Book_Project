@@ -289,7 +289,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
             JOptionPane.showInputDialog("현재 년월일");
         }
     }
-    private void setDayReset() { ////
+    private void setDayReset() {
         //년월 이벤트 등록해제
         yearCombo.removeItemListener(this); //등록이벤트를 해제시켜주고
         monthCombo.removeItemListener(this);
