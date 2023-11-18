@@ -17,6 +17,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -28,7 +31,7 @@ import javax.swing.border.TitledBorder;
 
 public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     Font fnt = new Font("SansSerif", Font.BOLD, 20); //★글씨체 통일감이 좋겠죠?
-
+    
     // 상단 년,월 달력옮기기 부분
     JPanel selectPane = new JPanel(); 
     JButton prevBtn = new JButton("◀");
@@ -47,6 +50,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     //상세내역 메모부분 관련
     JPanel memoPane = new JPanel();
     JLabel detailMemoLBl = new JLabel();
+    
+    //메뉴바
+    JMenuBar jmb = new JMenuBar();
     
     //달력 관련
     Calendar calendar;
@@ -98,6 +104,33 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         add(memoPane, BorderLayout.SOUTH);
         memoPane.setPreferredSize(new Dimension(600, 150));
         //detailMemo();
+        
+        // 상단메뉴바
+		JMenu jmu1 = new JMenu("파일");
+		JMenu jmu2 = new JMenu("편집");
+		JMenu jmu3 = new JMenu("보기");
+		
+		JMenuItem jmi1 = new JMenuItem("새로 만들기");
+		JMenuItem jmi2 = new JMenuItem("열기");
+		JMenuItem jmi3 = new JMenuItem("저장");
+		
+		jmu1.add(jmi1);
+		jmu1.add(jmi2);
+		jmu1.add(jmi3);
+		
+		JMenuItem jmi4 = new JMenuItem("잘라내기");
+		JMenuItem jmi5 = new JMenuItem("복사");
+		JMenuItem jmi6 = new JMenuItem("붙여넣기");
+		
+		jmu2.add(jmi4);
+		jmu2.add(jmi5);
+		jmu2.add(jmi6);
+		
+		jmb.add(jmu1);
+		jmb.add(jmu2);
+		jmb.add(jmu3);
+		
+		setJMenuBar(jmb);
         
         //---------------------------기능이벤트를 추가-------------------------------
         prevBtn.addActionListener(this);

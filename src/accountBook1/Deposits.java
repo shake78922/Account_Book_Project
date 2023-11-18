@@ -3,6 +3,7 @@ package accountBook1;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -14,11 +15,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 // icon images @ fontawesome.com
@@ -105,9 +108,37 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		
 		// ======= 하단 패널 =======
 		
+		JRadioButton r1,r2,r3,r4,r5;
+		String r1Img = "src/Images/deposit_sack.png";
+		String r2Img = "src/Images/deposit_bonus.png";
+		String r3Img = "src/Images/deposit_piggy.png";
+		String r4Img = "src/Images/deposit_wallet.png";
+		String r5Img = "src/Images/deposit_etc.png";
+		r1 = new JRadioButton(new ImageIcon("월급",r1Img));
+		r2 = new JRadioButton(new ImageIcon("보너스",r2Img));
+		r3 = new JRadioButton(new ImageIcon("적금",r3Img));
+		r4 = new JRadioButton(new ImageIcon("용돈",r4Img));
+		r5 = new JRadioButton(new ImageIcon("기타",r5Img));
+		
+		ButtonGroup radioGroup = new ButtonGroup();
+		radioGroup.add(r1);
+		radioGroup.add(r2);
+		radioGroup.add(r3);
+		radioGroup.add(r4);
+		radioGroup.add(r5);
+		
+		bottomPanel.setLayout(new FlowLayout());
+		bottomPanel.add(r1);
+		bottomPanel.add(r2);
+		bottomPanel.add(r3);
+		bottomPanel.add(r4);
+		bottomPanel.add(r5);
+		
+		//bottomPanel.setPreferredSize(new Dimension(600, 150));
+		add(BorderLayout.SOUTH, bottomPanel);
 		
 		
-
+		//setResizable(false);
 		setSize(400,400);
 		setLocationRelativeTo(null);
         setVisible(true);
