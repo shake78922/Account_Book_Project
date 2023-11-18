@@ -1,5 +1,4 @@
-package a_login;
-
+package a_loginFinal;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -16,12 +15,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 
-public class Login_src {
-	DBuser du = new DBuser();
+public class Login {
+	DB db = new DB();
+	SessionManager sm;
 	private JFrame f = new JFrame();
 	
 	//프로그램 시작점.
-	public Login_src() {
+	public Login() {
 		f.setLayout(null);
 		
 		//백그라운드 이미지
@@ -55,10 +55,12 @@ public class Login_src {
 			public void actionPerformed(ActionEvent e) {
 				String loginId = id.getText();
 				String loginPw = new String(pw.getPassword());
-				if(du.findID(loginId) && du.findPW(loginPw)) {
+				if(db.authenticateUser(loginId, loginPw)) {
 					JOptionPane.showMessageDialog(null, "로그인 성공");
+					sm = SessionManager.getInstance();
+	                sm.setCurrentUser(loginId);
 					f.dispose();
-					MyProfileMenu mu = new MyProfileMenu(loginId);
+					MyProfile mp = new MyProfile(sm);
 				}else {
 					JOptionPane.showMessageDialog(null, "아이디 또는 비밀번호를 찾을 수 없습니다.");
 				}
@@ -92,7 +94,7 @@ public class Login_src {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Sign_Up_Ui si = new Sign_Up_Ui();
-				si.signUp(signUp);
+				si.signUp();
 				f.dispose();
 				
 				
@@ -123,3 +125,4 @@ public class Login_src {
 	
 	
 }
+

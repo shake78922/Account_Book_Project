@@ -1,4 +1,4 @@
-package a_login;
+package a_loginFinal;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -15,15 +15,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import a_loginFinal.SessionManager;
 import accountBook1.*;
 
-public class MyProfileMenu {
-	private String id; //로그인한 아이디 저장 필드
-	DBuser db = new DBuser();
+public class MyProfile {
+	SessionManager sm;
 	
 	
-	public MyProfileMenu(String id) {
-		this.id = id; // 로그인한 사용자 아이디 저장
+	public MyProfile(SessionManager sm) {
+		this.sm = sm; // 로그인한 사용자 session 객체 저장
 		JFrame profileMenu = new JFrame("Profile");
 		profileMenu.setLayout(null);
 		String background = "src/Images/MENU-3.png"; //백그라운드 이미지 url
@@ -40,7 +40,7 @@ public class MyProfileMenu {
 				int option = JOptionPane.showOptionDialog(null, "로그아웃", "로그아웃 하시겠습니까 ? ",JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 				if(option == JOptionPane.YES_OPTION) {
 					profileMenu.dispose();
-					Login_src loginMenu = new Login_src();
+					Login loginMenu = new Login();
 				}else if(option == JOptionPane.NO_OPTION) {
 					return;
 				}
@@ -55,8 +55,8 @@ public class MyProfileMenu {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DiaryFinal diary = new DiaryFinal();
 				profileMenu.dispose();
+				DiaryFinal diary = new DiaryFinal();
 			}
 		});
 //		----------------------------------------
@@ -119,7 +119,8 @@ public class MyProfileMenu {
 						
 							int cashInt = Integer.parseInt(cashMoney.getText());
 							int accountInt = Integer.parseInt(accountField.getText());
-							db.insertCash(cashInt,accountInt, id);
+							DB db = new DB();
+							db.insertMoney(cashInt, accountInt, sm.getID());
 						
 						
 					}
@@ -176,4 +177,5 @@ public class MyProfileMenu {
 		
 	}
 }
+
 
