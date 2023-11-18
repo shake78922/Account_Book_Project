@@ -25,7 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import a_login.DBuser;
+//import a_login.DBuser;
 
 // icon images @ fontawesome.com
 // svg to png @ svgtopng.com
