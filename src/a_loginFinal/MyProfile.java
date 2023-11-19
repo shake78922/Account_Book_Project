@@ -114,11 +114,12 @@ public class MyProfile {
 							return;
 						}
 						
-							int cashInt = Integer.parseInt(cashMoney.getText());
-							int accountInt = Integer.parseInt(accountField.getText());
-							DB db = new DB();
-							db.updateMoney(cashInt, accountInt, sm.getID());
-						
+						int cashInt = Integer.parseInt(cashMoney.getText());
+						int accountInt = Integer.parseInt(accountField.getText());
+						DB db = new DB();
+						db.updateMoney(cashInt, accountInt, sm.getID());
+						JOptionPane.showMessageDialog(null, "저장되었습니다.");
+						accountMenu.dispose();
 						
 					}
 				});
