@@ -10,7 +10,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -48,8 +52,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     JPanel dayPane = new JPanel(new GridLayout(0, 7)); 
     
     //상세내역 메모부분 관련
-    JPanel memoPane = new JPanel();
+    JPanel memoPane = new JPanel(new BorderLayout());
     JLabel detailMemoLBl = new JLabel();
+    Map<String,List<String[]>> memoMap = new HashMap<>();
     
     //메뉴바
     JMenuBar jmb = new JMenuBar();
@@ -140,6 +145,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         }
         //날짜추가
         for(int day=1; day<=lastDay; day++) {
+        	
+        	String calDateId = getDateIdByDate(year, month, day);
+        	
         	JLabel lbl = new JLabel(String.valueOf(day)); 
         	lbl.setVerticalAlignment(SwingConstants.TOP);
         	lbl.setHorizontalAlignment(SwingConstants.LEFT);
@@ -171,16 +179,25 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
 	                if (result == JOptionPane.OK_OPTION) {
 	                    if (rb1.isSelected()) {
 	                        //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
-	                    	Deposits d = new Deposits(year, month, clickedDay);
-	                    	d.getDepositData();
 	                        //입금창 메서드나 클래스 호출 후
 	                        //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
 	                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
+	                    	
+	                    	Deposits dep = new Deposits(year, month, clickedDay);
+	                    	
+	                    	retrieveDepositsData(dep);
+
+	                    	
 	
 	                    } else if (rb2.isSelected()) {
-	
-	                        JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
+	                        //JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
 	                        //위와 동일하지만 출금창으로
+	                    	
+	                    	Expenses exp = new Expenses(year, month, clickedDay);
+	                    	
+	                    	retrieveExpensesData(exp);
+
+	                    	
 	                    }
 	                }
                 
@@ -189,7 +206,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                 public void mouseEntered(MouseEvent e) {
                 	super.mouseEntered(e);
                     lbl.setBackground(new Color(255, 193, 204));
-                    MyPayment(finalDay);
+                    MyTransactions(calDateId);
                 }
 
                 @Override
@@ -329,18 +346,116 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     }
     
   //my패널에 입출금 글자 띄우기
-    public void MyPayment(int day) {
+    public void MyTransactions(String dateId) {
+    	int year = getYearByDateId(dateId);
+    	int month = getMonthByDateId(dateId);
+    	int day = getDayByDateId(dateId);
+    	String dateString = String.format("%d년 %d월 %d일", year, month, day);
+    	String dataString = "";
+    	List<String[]> dataList = memoMap.get(dateId);
+    	
+    	if(dataList != null) {
+    	    for (String[] transactions : dataList) {
+    	        // Iterate through each String[] array
+    	        for (int i=0; i<transactions.length; i++) {
+    	        	if(i!=2) {
+    	        		dataString = dataString + transactions[i] + "\t\t";
+    	        	}else {
+    	        		dataString = dataString + transactions[i];
+    	        	}
+    	        }
+    	    }
+    	}
+    	
+
+    	
         memoPane.removeAll(); 
-        JLabel myLabel = new JLabel(day + "일\n 입금 : ");
-        memoPane.add(myLabel);
+        JLabel titleLabel = new JLabel(dateString);
+        JLabel dataLabel = new JLabel(dataString);
+        dataLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        memoPane.add(titleLabel, BorderLayout.NORTH);
+        memoPane.add(dataLabel, BorderLayout.CENTER);
         memoPane.revalidate();
-        myLabel.setFont(fnt_regular);
+        titleLabel.setFont(fnt_regular);
+        dataLabel.setFont(fnt_regular);
     }
 
     //my패널에 원래있던 글자 삭제하고 다시 띄우기
     public void MyPaneltxt() {
     	memoPane.removeAll(); 
     	memoPane.revalidate();
+    }
+    
+    public String getDateIdByDate(int year, int month, int day) {
+		String yearData = String.valueOf(year);
+		String monthData = (month < 10 ? "0" : "") + month;
+		String dayData = (day < 10 ? "0" : "") + day;
+		String dateId = yearData + monthData + dayData;
+		return dateId;
+    }
+    
+    public int getYearByDateId(String dateId) {
+    	int year = Integer.parseInt(dateId.substring(0,4));
+    	return year;
+    }
+    
+    public int getMonthByDateId(String dateId) {
+    	int month = Integer.parseInt(dateId.substring(4,6));
+    	return month;
+    }
+    
+    public int getDayByDateId(String dateId) {
+    	int day = Integer.parseInt(dateId.substring(6,8));
+    	return day;
+    }
+    
+    public void retrieveDepositsData(Deposits dep) {
+        String[] depositData = dep.getDepositData();
+        String dateId = dep.getDateId();
+        
+        if (depositData != null) {
+    		System.out.println("inside DiaryFinal Class");
+        	System.out.println(dateId);
+        	for(String data : depositData) {
+				System.out.println(data);
+			}
+            // Update data in DiaryFinal or relevant data structures
+            // For example, update memoMap or perform necessary actions
+            if (!memoMap.containsKey(dateId)) {
+                List<String[]> dataList = new ArrayList<>();
+                dataList.add(depositData);
+                memoMap.put(dateId, dataList);
+            } else {
+                List<String[]> dataList = memoMap.get(dateId);
+                dataList.add(depositData);
+                memoMap.put(dateId, dataList);
+            }
+        }
+        // Update UI or perform other necessary actions based on retrieved data
+        MyTransactions(dateId);
+    }
+
+    public void retrieveExpensesData(Expenses exp) {
+        String[] expenseData = exp.getExpenseData();
+        String dateId = exp.getDateId();
+    	
+    	if(expenseData != null) {
+    		System.out.println("inside DiaryFinal Class");
+        	System.out.println(dateId);
+        	for(String data : expenseData) {
+				System.out.println(data);
+			}
+        	if(!memoMap.containsKey(dateId)) {
+        		List<String[]> dataList = new ArrayList<>();
+        		dataList.add(expenseData);
+        		memoMap.put(dateId, dataList);
+        	}else {
+        		List<String[]> dataList = memoMap.get(dateId);
+        		dataList.add(expenseData);
+        		memoMap.put(dateId, dataList);
+        	}
+    	}
+        MyTransactions(dateId);
     }
 }
 

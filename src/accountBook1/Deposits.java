@@ -46,14 +46,8 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 	
 	private String year, month, clickedDay, depositType;
 	private String[] depositData;
+	private String dateId;
 
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -61,8 +55,9 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 	public Deposits(int year, int month, int clickedDay) {
 		super("입금");
 		this.year = String.valueOf(year);
-		this.month = String.valueOf(month);
-		this.clickedDay = String.valueOf(clickedDay);
+		this.month = (month < 10 ? "0" : "") + month;
+		this.clickedDay = (clickedDay < 10 ? "0" : "") + clickedDay;
+		this.dateId = this.year + this.month + this.clickedDay;
 		
 		// ======= 상단패널 ========
 		
@@ -144,11 +139,11 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		
 		// ======= 중앙 패널 =======
 		
-		String r1Img = "src/Images/deposit_sack.png";
-		String r2Img = "src/Images/deposit_bonus.png";
-		String r3Img = "src/Images/deposit_piggy.png";
-		String r4Img = "src/Images/deposit_wallet.png";
-		String r5Img = "src/Images/deposit_etc.png";
+		String r1Img = "src/Images/deposit/deposit_sack.png";
+		String r2Img = "src/Images/deposit/deposit_bonus.png";
+		String r3Img = "src/Images/deposit/deposit_piggy.png";
+		String r4Img = "src/Images/deposit/deposit_wallet.png";
+		String r5Img = "src/Images/deposit/deposit_etc.png";
 		
 		r1_1 = new JRadioButton("월급", new ImageIcon(r1Img));
 		r1_2 = new JRadioButton("일급", new ImageIcon(r1Img));
@@ -209,19 +204,12 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		setLocationRelativeTo(null);
         setVisible(true);
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == confirmButton) {
-			depositData = new String[7];
-			depositData[0] = year;
-			depositData[1] = month;
-			depositData[2] = clickedDay;
-			depositData[3] = amountTf.getText();
-			depositData[4] = descriptionTf.getText();
-			depositData[5] = depositType;
-			Deposits.super.dispose();
+			onConfirmButtonClicked();
 		}else if(obj == cancelButton) {
 			Deposits.super.dispose();
 		}
@@ -248,7 +236,28 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 	}
 	
 	public String[] getDepositData() {
-		return depositData;
-	}
+		if(depositData != null) {
+			for(String data : depositData) {
+				System.out.println("inside Deposits Class");
+				System.out.println(data);
+			}
+			return depositData;
+		}else {
+			return null;
+		}
 
+	}
+	
+	public String getDateId() {
+		return dateId;
+	}
+	
+	private void onConfirmButtonClicked() {
+		depositData = new String[3];
+		depositData[0] = depositType;
+		depositData[1] = "+ " + amountTf.getText();
+		depositData[2] = descriptionTf.getText();
+		Deposits.super.dispose();
+	}
+	
 }

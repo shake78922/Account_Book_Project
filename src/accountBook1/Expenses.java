@@ -15,6 +15,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -41,28 +43,25 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	
 	private JLabel dateLabel;
 	private JTextField amountTf, descriptionTf;
-	private JRadioButton r1_1,r1_2,r2,r3,r4,r5;
+	private String[] iconArray;
+	private String[] rbLabelArray;
+	private JRadioButton[] rbArray;
 	private JButton confirmButton, cancelButton;
 	
-	private String year, month, clickedDay, depositType;
-	private String[] depositData;
-
-	
-	
-	
-	
-	
-	
+	private String year, month, clickedDay, expenseType;
+	private String[] expenseData;
+	private String dateId;
 	
 	
 	
 	
 	
 	public Expenses(int year, int month, int clickedDay) {
-		super("입금");
+		super("지출");
 		this.year = String.valueOf(year);
-		this.month = String.valueOf(month);
-		this.clickedDay = String.valueOf(clickedDay);
+		this.month = (month < 10 ? "0" : "") + month;
+		this.clickedDay = (clickedDay < 10 ? "0" : "") + clickedDay;
+		this.dateId = this.year + this.month + this.clickedDay;
 		
 		// ======= 상단패널 ========
 		
@@ -84,7 +83,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		amountLabel.setBounds(0,45,50,50);
 
 		//입금 금액 텍스트필드
-		amountTf = new HintTextField("입금할 금액");
+		amountTf = new HintTextField("지출 금액");
 		amountTf.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -144,48 +143,27 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		
 		// ======= 중앙 패널 =======
 		
-		String r1Img = "src/Images/deposit_sack.png";
-		String r2Img = "src/Images/deposit_bonus.png";
-		String r3Img = "src/Images/deposit_piggy.png";
-		String r4Img = "src/Images/deposit_wallet.png";
-		String r5Img = "src/Images/deposit_etc.png";
-		
-		r1_1 = new JRadioButton("월급", new ImageIcon(r1Img));
-		r1_2 = new JRadioButton("일급", new ImageIcon(r1Img));
-		r2 = new JRadioButton("보너스", new ImageIcon(r2Img));
-		r3 = new JRadioButton("적금", new ImageIcon(r3Img));
-		r4 = new JRadioButton("용돈", new ImageIcon(r4Img));
-		r5 = new JRadioButton("기타", new ImageIcon(r5Img));
-		
-		r1_1.setBorderPainted(true);
-		r1_2.setBorderPainted(true);
-		r2.setBorderPainted(true);
-		r3.setBorderPainted(true);
-		r4.setBorderPainted(true);
-		r5.setBorderPainted(true);
-		
 		ButtonGroup radioGroup = new ButtonGroup();
-		radioGroup.add(r1_1);
-		radioGroup.add(r1_2);
-		radioGroup.add(r2);
-		radioGroup.add(r3);
-		radioGroup.add(r4);
-		radioGroup.add(r5);
-		
-		r1_1.addItemListener(this);
-		r1_2.addItemListener(this);
-		r2.addItemListener(this);
-		r3.addItemListener(this);
-		r4.addItemListener(this);
-		r5.addItemListener(this);
-		
 		centerPanel.setLayout(new FlowLayout());
-		centerPanel.add(r1_1);
-		centerPanel.add(r1_2);
-		centerPanel.add(r2);
-		centerPanel.add(r3);
-		centerPanel.add(r4);
-		centerPanel.add(r5);
+		
+		iconArray = new String[25];
+		for(int i=0; i<iconArray.length; i++) {
+			iconArray[i] = "src/Images/expenses/expenses" + (i+1) +".png";
+		}
+		rbArray = new JRadioButton[25];
+		rbLabelArray = new String[]{"식비","간식","교통","문화","오락",
+									"교육","여행","패션","미용","생필품",
+									"통신","주거비","대출이자","공과금","적금",
+									"편의점","건강","카페","담배","술",
+									"취미","용돈","선물","데이트","기타"};
+		
+		for(int i=0; i<rbArray.length; i++) {
+			rbArray[i] = new JRadioButton(rbLabelArray[i], new ImageIcon(iconArray[i]));
+			rbArray[i].setBorderPainted(true);
+			radioGroup.add(rbArray[i]);
+			rbArray[i].addItemListener(this);
+			centerPanel.add(rbArray[i]);
+		}
 		
 		add(BorderLayout.CENTER, centerPanel);
 		
@@ -205,7 +183,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		
 		
 		setResizable(false);
-		setSize(400,400);
+		setSize(450,450);
 		setLocationRelativeTo(null);
         setVisible(true);
 	}
@@ -214,14 +192,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj == confirmButton) {
-			depositData = new String[6];
-			depositData[0] = year;
-			depositData[1] = month;
-			depositData[2] = clickedDay;
-			depositData[3] = amountTf.getText();
-			depositData[4] = descriptionTf.getText();
-			depositData[5] = depositType;
-			Expenses.super.dispose();
+			onConfirmButtonClicked();
 		}else if(obj == cancelButton) {
 			Expenses.super.dispose();
 		}
@@ -230,25 +201,34 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getStateChange() == ItemEvent.SELECTED) {
-			if(e.getSource() == r1_1){
-				depositType = r1_1.getText();
-			}else if(e.getSource() == r1_2){
-				depositType = r1_2.getText();
-			}else if(e.getSource() == r2){
-				depositType = r2.getText();
-			}else if(e.getSource() == r3){
-				depositType = r3.getText();
-			}else if(e.getSource() == r4){
-				depositType = r4.getText();
-			}else if(e.getSource() == r5){
-				depositType = r5.getText();
+			for(int i=0; i>rbArray.length; i++) {
+				if(e.getSource() == rbArray[i]) {
+					expenseType = rbArray[i].getText();
+					break;
+				}
 			}
 		}
-		
 	}
 	
-	public String[] getDepositData() {
-		return depositData;
+	public String[] getExpenseData() {
+		if(expenseData != null) {
+			return expenseData;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public String getDateId() {
+		return dateId;
+	}
+	
+	private void onConfirmButtonClicked() {
+		expenseData = new String[3];
+		expenseData[0] = expenseType;
+		expenseData[1] = "- " + amountTf.getText();
+		expenseData[2] = descriptionTf.getText();
+		Expenses.super.dispose();
 	}
 
 }
