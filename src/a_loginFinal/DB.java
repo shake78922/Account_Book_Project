@@ -4,7 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+
+import accountBook1.PaymentTypeConverter;
 
 public class DB {
     private Connection cnn = null;
@@ -158,6 +167,167 @@ public class DB {
         }
         return account1;
     }
+    
+    public void insertDeposit(String userId, String depositDate, int depositAmount, String depositType, String paymentType, String description) {
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "INSERT INTO deposits (user_id, deposit_date, deposit_amount, deposit_type, payment_type, description) VALUES (?, ?, ?, ?, ?, ?)";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            stmt.setString(2, depositDate);
+            stmt.setInt(3, depositAmount);
+            stmt.setString(4, depositType);
+            stmt.setString(5, paymentType);
+            stmt.setString(6, description);
+            int res = stmt.executeUpdate();
+            if (res == 1) {
+            	JOptionPane.showMessageDialog(null, "입금 내역이 입력되었습니다.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+    }
+    
+    public void insertExpense(String userId, String expenseDate, int expenseAmount, String expenseType, String paymentType, String description) {
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "INSERT INTO expenses (user_id, expense_date, expense_amount, expense_type, payment_type, description) VALUES (?, ?, ?, ?, ?, ?)";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            stmt.setString(2, expenseDate);
+            stmt.setInt(3, expenseAmount);
+            stmt.setString(4, expenseType);
+            stmt.setString(5, paymentType);
+            stmt.setString(6, description);
+            int res = stmt.executeUpdate();
+            if (res == 1) {
+            	JOptionPane.showMessageDialog(null, "지출 내역이 입력되었습니다.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+    }
+    
+    public List<String> getPaymentTypesForUser(String userId) {
+        List<String> paymentTypes = new ArrayList<>();
+        
+        Map<String, String> colNameMap = new HashMap<>();
+        colNameMap.put("cash", "현금");
+        colNameMap.put("account1", "계좌1");
+        colNameMap.put("account2", "계좌2");
+        colNameMap.put("account3", "계좌3");
+        
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "SELECT * FROM accounts WHERE ID = ?";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int colCnt = metaData.getColumnCount();
+                for (int i = 1; i <= colCnt; i++) {
+                    String colName = metaData.getColumnName(i);
+                    if (!colName.equalsIgnoreCase("ID") && rs.getObject(colName) != null) {
+                    	String korColName = colNameMap.getOrDefault(colName, colName);
+                        paymentTypes.add(korColName);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return paymentTypes;
+    }
+    
+    private String dateIdToSQLDate(String dateId) {
+        String year = dateId.substring(0, 4);
+        String month = dateId.substring(4, 6);
+        String day = dateId.substring(6, 8);
+        return String.format("%s-%s-%s", year, month, day);
+    }
+    
+//    private String sqlDateToDateId(String sqlDate) {
+//        // Extract year, month, and day from the SQL date
+//        String[] parts = sqlDate.split("-");
+//        String year = parts[0];
+//        String month = parts[1];
+//        String day = parts[2];
+//
+//        // Combine the year, month, and day into the "dateId" format (yyyyMMdd)
+//        return year + month + day;
+//    }
+    
+    public List<String[]> getDepositDataByDateId(String userId, String dateId) {
+        List<String[]> depositDataList = new ArrayList<>();
+        PaymentTypeConverter converter = new PaymentTypeConverter();
+
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "SELECT deposit_amount, deposit_type, payment_type, description FROM deposits WHERE user_id = ? AND deposit_date = ?";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            stmt.setString(2, dateIdToSQLDate(dateId)); // Convert the dateId to SQL date format
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String depositAmount = "+" + String.valueOf(rs.getInt("deposit_amount"));
+                String depositType = rs.getString("deposit_type");
+                String paymentType = converter.convertEngToKorPayType(rs.getString("payment_type"));
+                String description = rs.getString("description");
+
+                // Create an array to store each deposit record's data
+                String[] depositRecord = {depositAmount, depositType, paymentType, description};
+                depositDataList.add(depositRecord);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return depositDataList;
+    }
+    
+    public List<String[]> getExpenseDataByDateId(String userId, String dateId) {
+        List<String[]> expenseDataList = new ArrayList<>();
+
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "SELECT expense_amount, expense_type, payment_type, description FROM expenses WHERE user_id = ? AND expense_date = ?";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            stmt.setString(2, dateIdToSQLDate(dateId)); // Convert the dateId to SQL date format
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String expenseAmount = "-" + String.valueOf(rs.getInt("expense_amount"));
+                String expenseType = rs.getString("expense_type");
+                String paymentType = rs.getString("payment_type");
+                String description = rs.getString("description");
+
+                // Create an array to store each expense record's data
+                String[] expenseRecord = {expenseAmount, expenseType, paymentType, description};
+                expenseDataList.add(expenseRecord);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return expenseDataList;
+    }
+    
+    
 
     
     private void closeResources() {

@@ -16,18 +16,23 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 //import a_login.DBuser;
+
+import a_loginFinal.DB;
+import a_loginFinal.SessionManager;
 
 // icon images @ fontawesome.com
 // svg to png @ svgtopng.com
@@ -43,6 +48,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	
 	private JLabel dateLabel;
 	private JTextField amountTf, descriptionTf;
+	private JComboBox<String> paymentTypeCb;
 	private String[] iconArray;
 	private String[] rbLabelArray;
 	private JRadioButton[] rbArray;
@@ -51,17 +57,20 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	private String year, month, clickedDay, expenseType;
 	private String[] expenseData;
 	private String dateId;
+	private String sqlDateId;
+	
+	DB db = new DB();
+	SessionManager sm;
 	
 	
-	
-	
-	
-	public Expenses(int year, int month, int clickedDay) {
+	public Expenses(int year, int month, int clickedDay, SessionManager sm) {
 		super("지출");
+		this.sm = sm;
 		this.year = String.valueOf(year);
 		this.month = (month < 10 ? "0" : "") + month;
 		this.clickedDay = (clickedDay < 10 ? "0" : "") + clickedDay;
 		this.dateId = this.year + this.month + this.clickedDay;
+		this.sqlDateId = this.year + "-" + this.month + "-" + this.clickedDay;
 		
 		// ======= 상단패널 ========
 		
@@ -98,6 +107,17 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		
 		// -------
 		
+		// 자산(결제수단) 아이콘
+		
+		String paymentTypeImg = "src/Images/payment_type20.png";
+		JLabel paymentTypeLabel = new JLabel(new ImageIcon(paymentTypeImg));
+
+		// 자산(결제수단) 콤보박스
+		List<String> paymentTypes = db.getPaymentTypesForUser(sm.getID());
+		paymentTypeCb = new JComboBox<>(paymentTypes.toArray(new String[0]));
+		
+		// -------
+		
 		// 상세내역 아이콘
 		String descriptionImg = "src/Images/description20.png";
 		JLabel descriptionLabel = new JLabel(new ImageIcon(descriptionImg));
@@ -120,10 +140,12 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 				   		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				   				.addComponent(calLabel)
 				   				.addComponent(amountLabel)
+				   				.addComponent(paymentTypeLabel)
 				   				.addComponent(descriptionLabel))
 				   		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				   				.addComponent(dateLabel)
 				   				.addComponent(amountTf)
+				   				.addComponent(paymentTypeCb)
 				   				.addComponent(descriptionTf))
 				);
 		layout.setVerticalGroup(
@@ -134,6 +156,9 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 		      					.addComponent(amountLabel)
 						        .addComponent(amountTf))
+		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+		      					.addComponent(paymentTypeLabel)
+						        .addComponent(paymentTypeCb))
 		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 		      					.addComponent(descriptionLabel)
 						        .addComponent(descriptionTf))
@@ -183,7 +208,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		
 		
 		setResizable(false);
-		setSize(450,450);
+		setSize(450,500);
 		setLocationRelativeTo(null);
         setVisible(true);
 	}
@@ -201,7 +226,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getStateChange() == ItemEvent.SELECTED) {
-			for(int i=0; i>rbArray.length; i++) {
+			for(int i=0; i<rbArray.length; i++) {
 				if(e.getSource() == rbArray[i]) {
 					expenseType = rbArray[i].getText();
 					break;
@@ -210,25 +235,30 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 		}
 	}
 	
-	public String[] getExpenseData() {
-		if(expenseData != null) {
-			return expenseData;
-		}
-		else {
-			return null;
-		}
-	}
-	
-	public String getDateId() {
-		return dateId;
-	}
 	
 	private void onConfirmButtonClicked() {
-		expenseData = new String[3];
-		expenseData[0] = expenseType;
-		expenseData[1] = "- " + amountTf.getText();
-		expenseData[2] = descriptionTf.getText();
+		
+		PaymentTypeConverter converter = new PaymentTypeConverter();
+		String korPaymentType = (String) paymentTypeCb.getSelectedItem();
+        String engPaymentType = converter.convertKorToEngPayType(korPaymentType);
+		
+		expenseData = new String[4];
+		expenseData[0] = amountTf.getText();
+		expenseData[1] = expenseType;
+		expenseData[2] = engPaymentType;
+		expenseData[3] = descriptionTf.getText();
+		
+	    db.insertExpense(
+	            sm.getID(),
+	            sqlDateId,
+	            Integer.parseInt(expenseData[0]),
+	            expenseData[1],
+	            expenseData[2],
+	            expenseData[3]
+	        );
+		
 		Expenses.super.dispose();
+		
 	}
 
 }

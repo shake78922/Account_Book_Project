@@ -1,31 +1,31 @@
 package accountBook1;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-//import a_login.DBuser;
+
+import a_loginFinal.DB;
+import a_loginFinal.SessionManager;
 
 // icon images @ fontawesome.com
 // svg to png @ svgtopng.com
@@ -41,34 +41,36 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 	
 	private JLabel dateLabel;
 	private JTextField amountTf, descriptionTf;
+	private JComboBox<String> paymentTypeCb;
 	private JRadioButton r1_1,r1_2,r2,r3,r4,r5;
 	private JButton confirmButton, cancelButton;
 	
 	private String year, month, clickedDay, depositType;
 	private String[] depositData;
 	private String dateId;
+	private String sqlDateId;
 
+	DB db = new DB();
+	SessionManager sm;
 	
 	
-	
-	
-	public Deposits(int year, int month, int clickedDay) {
+	public Deposits(int year, int month, int clickedDay, SessionManager sm) {
 		super("입금");
+		this.sm = sm;
 		this.year = String.valueOf(year);
 		this.month = (month < 10 ? "0" : "") + month;
 		this.clickedDay = (clickedDay < 10 ? "0" : "") + clickedDay;
 		this.dateId = this.year + this.month + this.clickedDay;
+		this.sqlDateId = this.year + "-" + this.month + "-" + this.clickedDay;
 		
 		// ======= 상단패널 ========
 		
 		// 날짜 아이콘
 		String calImg = "src/Images/calendar20.png";
 		JLabel calLabel = new JLabel(new ImageIcon(calImg));
-		calLabel.setBounds(0,0,50,50);
 
 		// 날짜 라벨
 		dateLabel = new JLabel(String.format("%d년 %d월 %d일", year, month, clickedDay));
-		dateLabel.setBounds(47,0,400,50);
 		dateLabel.setFont(fnt_regular);
 		
 		// -------
@@ -76,7 +78,6 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		// 입금 금액 아이콘
 		String amountImg = "src/Images/won_sign20.png";
 		JLabel amountLabel = new JLabel(new ImageIcon(amountImg));
-		amountLabel.setBounds(0,45,50,50);
 
 		//입금 금액 텍스트필드
 		amountTf = new HintTextField("입금할 금액");
@@ -89,19 +90,28 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 				}
 			}
 		});
-		amountTf.setBounds(45,55,150,30);
 		amountTf.setFont(fnt_regular);
+		
+		// -------
+		
+		// 자산(결제수단) 아이콘
+		
+		String paymentTypeImg = "src/Images/payment_type20.png";
+		JLabel paymentTypeLabel = new JLabel(new ImageIcon(paymentTypeImg));
+
+		// 자산(결제수단) 콤보박스
+		List<String> paymentTypes = db.getPaymentTypesForUser(sm.getID());
+		paymentTypeCb = new JComboBox<>(paymentTypes.toArray(new String[0]));
+		
 		
 		// -------
 		
 		// 상세내역 아이콘
 		String descriptionImg = "src/Images/description20.png";
 		JLabel descriptionLabel = new JLabel(new ImageIcon(descriptionImg));
-		descriptionLabel.setBounds(0,90,50,50);
 
 		// 상세 내역 텍스트필드
 		descriptionTf = new HintTextField("상세 내역");
-		descriptionTf.setBounds(45,100,400,30);
 		descriptionTf.setFont(fnt_regular);
 		
 		// -------
@@ -116,10 +126,12 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 				   		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				   				.addComponent(calLabel)
 				   				.addComponent(amountLabel)
+				   				.addComponent(paymentTypeLabel)
 				   				.addComponent(descriptionLabel))
 				   		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				   				.addComponent(dateLabel)
 				   				.addComponent(amountTf)
+				   				.addComponent(paymentTypeCb)
 				   				.addComponent(descriptionTf))
 				);
 		layout.setVerticalGroup(
@@ -130,6 +142,9 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 		      					.addComponent(amountLabel)
 						        .addComponent(amountTf))
+		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+		      					.addComponent(paymentTypeLabel)
+						        .addComponent(paymentTypeCb))
 		      			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 		      					.addComponent(descriptionLabel)
 						        .addComponent(descriptionTf))
@@ -235,28 +250,28 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		
 	}
 	
-	public String[] getDepositData() {
-		if(depositData != null) {
-			for(String data : depositData) {
-				System.out.println("inside Deposits Class");
-				System.out.println(data);
-			}
-			return depositData;
-		}else {
-			return null;
-		}
-
-	}
-	
-	public String getDateId() {
-		return dateId;
-	}
 	
 	private void onConfirmButtonClicked() {
-		depositData = new String[3];
-		depositData[0] = depositType;
-		depositData[1] = "+ " + amountTf.getText();
-		depositData[2] = descriptionTf.getText();
+		
+		PaymentTypeConverter converter = new PaymentTypeConverter();
+		String korPaymentType = (String) paymentTypeCb.getSelectedItem();
+        String engPaymentType = converter.convertKorToEngPayType(korPaymentType);
+		
+		depositData = new String[4];
+		depositData[0] = amountTf.getText();
+		depositData[1] = depositType;
+		depositData[2] = engPaymentType;
+		depositData[3] = descriptionTf.getText();
+		
+	    db.insertDeposit(
+	            sm.getID(),
+	            sqlDateId,
+	            Integer.parseInt(depositData[0]),
+	            depositData[1],
+	            depositData[2],
+	            depositData[3]
+	        );
+		
 		Deposits.super.dispose();
 	}
 	

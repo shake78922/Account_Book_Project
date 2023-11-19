@@ -53,7 +53,7 @@ public class MyProfile {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				profileMenu.dispose();
-				DiaryFinal diary = new DiaryFinal();
+				DiaryFinal diary = new DiaryFinal(sm);
 			}
 		});
 //		----------------------------------------
