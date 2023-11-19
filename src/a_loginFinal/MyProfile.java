@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,15 +14,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import accountBook1.*;
+import accountBook1.DiaryFinal;
 
 public class MyProfile {
-	SessionManager sm;
+    SessionManager sm;
+    JFrame profileMenu;
+    Map<String, Integer> accountBalances;
 	
 	
 	public MyProfile(SessionManager sm) {
 		this.sm = sm; // 로그인한 사용자 session 객체 저장
-		JFrame profileMenu = new JFrame("Profile");
+		profileMenu = new JFrame("Profile");
 		profileMenu.setLayout(null);
 		String background = "src/Images/MENU-3.png"; //백그라운드 이미지 url
 		JLabel menuBackground = new JLabel(new ImageIcon(background)); //백그라운드 이미지 
@@ -36,6 +39,7 @@ public class MyProfile {
 			public void actionPerformed(ActionEvent e) {
 				int option = JOptionPane.showOptionDialog(null, "로그아웃", "로그아웃 하시겠습니까 ? ",JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 				if(option == JOptionPane.YES_OPTION) {
+					sm.logout();
 					profileMenu.dispose();
 					Login loginMenu = new Login();
 				}else if(option == JOptionPane.NO_OPTION) {
@@ -160,7 +164,7 @@ public class MyProfile {
 		
 		
 		
-		
+		fetchAndDisplayAccountBalances();
 		
 		
 		
@@ -174,6 +178,35 @@ public class MyProfile {
 		profileMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
+	
+    private void fetchAndDisplayAccountBalances() {
+        DB db = new DB();
+        accountBalances = db.getAccountBalances(sm.getID());
+
+        int yOffset = 200; // Initial Y offset for JLabels
+        int totalAmount = 0;
+
+        // Display account balances and calculate total amount
+        for (Map.Entry<String, Integer> entry : accountBalances.entrySet()) {
+            String accountName = entry.getKey();
+            int balance = entry.getValue();
+
+            JLabel accountLabel = new JLabel(accountName + ": " + balance + "원");
+            accountLabel.setBounds(100, yOffset, 150, 30);
+            profileMenu.add(accountLabel);
+
+            totalAmount += balance; // Calculate total amount
+            yOffset += 50; // Increment Y offset for the next JLabel
+        }
+
+        JLabel totalAmountLabel = new JLabel("총 자산: " + totalAmount + "원");
+        totalAmountLabel.setBounds(100, yOffset, 150, 30);
+        profileMenu.add(totalAmountLabel);
+
+        // Set JFrame size based on the number of JLabels created
+        profileMenu.setSize(400, 200 + (accountBalances.size() * 50));
+        profileMenu.setVisible(true);
+    }
 }
 
 

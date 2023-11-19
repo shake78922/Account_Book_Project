@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -31,6 +30,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import a_loginFinal.DB;
+import a_loginFinal.Login;
+import a_loginFinal.MyProfile;
 import a_loginFinal.SessionManager;
 
 //  ★ 색감을 로그인창이랑 맞추고싶긴한데...의견 주세요
@@ -253,29 +254,32 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     }
     
     public void setMenuBar() {
-		JMenu jmu1 = new JMenu("파일");
-		JMenu jmu2 = new JMenu("편집");
-		JMenu jmu3 = new JMenu("보기");
+		JMenu jmu1 = new JMenu("옵션");
 		
-		JMenuItem jmi1 = new JMenuItem("새로 만들기");
-		JMenuItem jmi2 = new JMenuItem("열기");
-		JMenuItem jmi3 = new JMenuItem("저장");
+		JMenuItem jmi1 = new JMenuItem("내 프로필");
+	    jmi1.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	        	DiaryFinal.super.dispose();
+	            MyProfile profileFrame = new MyProfile(sm);
+	        }
+	    });
+		
+		JMenuItem jmi2 = new JMenuItem("로그아웃");
+	    jmi2.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            int option = JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
+	            if (option == JOptionPane.YES_OPTION) {
+	                sm.logout(); // Logout the current session using the SessionManager
+	                DiaryFinal.super.dispose(); // Close the current DiaryFinal frame
+	                Login loginMenu = new Login(); // Open the Login frame
+	            }
+	        }
+	    });
 		
 		jmu1.add(jmi1);
 		jmu1.add(jmi2);
-		jmu1.add(jmi3);
-		
-		JMenuItem jmi4 = new JMenuItem("잘라내기");
-		JMenuItem jmi5 = new JMenuItem("복사");
-		JMenuItem jmi6 = new JMenuItem("붙여넣기");
-		
-		jmu2.add(jmi4);
-		jmu2.add(jmi5);
-		jmu2.add(jmi6);
 		
 		jmb.add(jmu1);
-		jmb.add(jmu2);
-		jmb.add(jmu3);
 		
 		setJMenuBar(jmb);
     }

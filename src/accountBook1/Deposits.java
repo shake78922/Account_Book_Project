@@ -271,6 +271,8 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 	            depositData[2],
 	            depositData[3]
 	        );
+	    
+	    db.updateAccountBalancesForDeposits(sm.getID(), depositData);
 		
 		Deposits.super.dispose();
 	}

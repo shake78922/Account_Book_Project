@@ -257,6 +257,8 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
 	            expenseData[3]
 	        );
 		
+	    db.updateAccountBalancesForExpenses(sm.getID(), expenseData);
+	    
 		Expenses.super.dispose();
 		
 	}

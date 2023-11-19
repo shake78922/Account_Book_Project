@@ -248,6 +248,45 @@ public class DB {
         return paymentTypes;
     }
     
+    public Map<String, Integer> getAccountBalances(String userId) {
+        Map<String, Integer> accountBalances = new HashMap<>();
+        
+        Map<String, String> colNameMap = new HashMap<>();
+        colNameMap.put("cash", "현금");
+        colNameMap.put("account1", "계좌1");
+        colNameMap.put("account2", "계좌2");
+        colNameMap.put("account3", "계좌3");
+        
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String sql = "SELECT * FROM accounts WHERE ID = ?";
+            stmt = cnn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int colCnt = metaData.getColumnCount();
+                for (int i = 1; i <= colCnt; i++) {
+                    String colName = metaData.getColumnName(i);
+                    if (!colName.equalsIgnoreCase("ID")) {
+                        String korColName = colNameMap.getOrDefault(colName, colName);
+                        Integer balance = rs.getInt(colName);
+                        if (!rs.wasNull()) {
+                            accountBalances.put(korColName, balance); // Add to map if the balance is not null
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return accountBalances;
+    }
+    
     private String dateIdToSQLDate(String dateId) {
         String year = dateId.substring(0, 4);
         String month = dateId.substring(4, 6);
@@ -327,7 +366,93 @@ public class DB {
         return expenseDataList;
     }
     
+    public void updateAccountBalancesForDeposits(String userId, String[] depositData) {
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String paymentType = depositData[2];
+            int depositAmount = Integer.parseInt(depositData[0]);
+
+            String sql = "UPDATE accounts SET ";
+            String columnToUpdate = ""; // To store the column name to be updated
+
+            // Use English column names to update the specific column
+            if ("cash".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "cash";
+            } else if ("account1".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "account1";
+            } else if ("account2".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "account2";
+            } else if ("account3".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "account3";
+            }
+
+            // Construct the SQL query dynamically based on the determined column
+            if (!columnToUpdate.isEmpty()) {
+                sql += columnToUpdate + " = " + columnToUpdate + " + ? WHERE ID = ?";
+                stmt = cnn.prepareStatement(sql);
+                stmt.setInt(1, depositAmount);
+                stmt.setString(2, userId);
+                
+                int rowsAffected = stmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Account balances updated successfully.");
+                } else {
+                    System.out.println("Failed to update account balances.");
+                }
+            } else {
+                System.out.println("Payment type not recognized.");
+            }
+        } catch (SQLException | NumberFormatException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+    }
     
+    public void updateAccountBalancesForExpenses(String userId, String[] expenseData) {
+        try {
+            cnn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            String paymentType = expenseData[2];
+            int expenseAmount = Integer.parseInt(expenseData[0]);
+
+            String sql = "UPDATE accounts SET ";
+            String columnToUpdate = ""; // To store the column name to be updated
+
+            // Use English column names to update the specific column
+            if ("cash".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "cash";
+            } else if ("account1".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "account1";
+            } else if ("account2".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "account2";
+            } else if ("account3".equalsIgnoreCase(paymentType)) {
+                columnToUpdate = "account3";
+            }
+
+            // Construct the SQL query dynamically based on the determined column
+            if (!columnToUpdate.isEmpty()) {
+                sql += columnToUpdate + " = " + columnToUpdate + " - ? WHERE ID = ?";
+                stmt = cnn.prepareStatement(sql);
+                stmt.setInt(1, expenseAmount);
+                stmt.setString(2, userId);
+                
+                int rowsAffected = stmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Account balances updated successfully for expenses.");
+                } else {
+                    System.out.println("Failed to update account balances for expenses.");
+                }
+            } else {
+                System.out.println("Payment type not recognized for expenses.");
+            }
+        } catch (SQLException | NumberFormatException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+    }
 
     
     private void closeResources() {
