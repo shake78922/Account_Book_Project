@@ -213,54 +213,56 @@ public class Expenses extends JFrame implements ItemListener, ActionListener{
         setVisible(true);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
-		if(obj == confirmButton) {
-			onConfirmButtonClicked();
-		}else if(obj == cancelButton) {
-			Expenses.super.dispose();
-		}
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // 확인 또는 취소 버튼을 눌렀을 때 동작을 정의하는 메서드
+        Object obj = e.getSource();
+        if (obj == confirmButton) {
+            onConfirmButtonClicked();
+        } else if (obj == cancelButton) {
+            Expenses.super.dispose();
+        }
+    }
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if(e.getStateChange() == ItemEvent.SELECTED) {
-			for(int i=0; i<rbArray.length; i++) {
-				if(e.getSource() == rbArray[i]) {
-					expenseType = rbArray[i].getText();
-					break;
-				}
-			}
-		}
-	}
-	
-	
-	private void onConfirmButtonClicked() {
-		
-		PaymentTypeConverter converter = new PaymentTypeConverter();
-		String korPaymentType = (String) paymentTypeCb.getSelectedItem();
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        // RadioButton 아이템 선택 상태가 변경될 때 동작을 정의하는 메서드
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            for (int i = 0; i < rbArray.length; i++) {
+                if (e.getSource() == rbArray[i]) {
+                    expenseType = rbArray[i].getText();
+                    break;
+                }
+            }
+        }
+    }
+
+    private void onConfirmButtonClicked() {
+        // 확인 버튼 클릭 시 동작을 정의하는 메서드
+        
+        PaymentTypeConverter converter = new PaymentTypeConverter();
+        String korPaymentType = (String) paymentTypeCb.getSelectedItem();
         String engPaymentType = converter.convertKorToEngPayType(korPaymentType);
-		
-		expenseData = new String[4];
-		expenseData[0] = amountTf.getText();
-		expenseData[1] = expenseType;
-		expenseData[2] = engPaymentType;
-		expenseData[3] = descriptionTf.getText();
-		
-	    db.insertExpense(
-	            sm.getID(),
-	            sqlDateId,
-	            Integer.parseInt(expenseData[0]),
-	            expenseData[1],
-	            expenseData[2],
-	            expenseData[3]
-	        );
-		
-	    db.updateAccountBalancesForExpenses(sm.getID(), expenseData);
-	    
-		Expenses.super.dispose();
-		
-	}
 
+        expenseData = new String[4];
+        expenseData[0] = amountTf.getText();
+        expenseData[1] = expenseType;
+        expenseData[2] = engPaymentType;
+        expenseData[3] = descriptionTf.getText();
+
+        // 데이터베이스에 지출 데이터 추가
+        db.insertExpense(
+            sm.getID(),
+            sqlDateId,
+            Integer.parseInt(expenseData[0]),
+            expenseData[1],
+            expenseData[2],
+            expenseData[3]
+        );
+
+        // 지출에 따른 계좌 잔액 업데이트
+        db.updateAccountBalancesForExpenses(sm.getID(), expenseData);
+
+        Expenses.super.dispose();
+    }
 }

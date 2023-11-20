@@ -58,6 +58,7 @@ public class MyProfile {
 			public void actionPerformed(ActionEvent e) {
 				profileMenu.dispose();
 				DiaryFinal diary = new DiaryFinal(sm);
+
 			}
 		});
 //		----------------------------------------
@@ -124,6 +125,9 @@ public class MyProfile {
 						db.updateMoney(cashInt, accountInt, sm.getID());
 						JOptionPane.showMessageDialog(null, "저장되었습니다.");
 						accountMenu.dispose();
+						profileMenu.dispose();
+						MyProfile newMenu = new MyProfile(sm);
+						
 						
 					}
 				});
@@ -179,34 +183,36 @@ public class MyProfile {
 		
 	}
 	
-    private void fetchAndDisplayAccountBalances() {
-        DB db = new DB();
-        accountBalances = db.getAccountBalances(sm.getID());
+	// 계좌 잔액을 가져와서 화면에 표시하는(private) 메서드
+	private void fetchAndDisplayAccountBalances() {
+	    DB db = new DB(); // DB 객체 생성
+	    accountBalances = db.getAccountBalances(sm.getID()); // 사용자의 계좌 잔액 가져오기
 
-        int yOffset = 200; // Initial Y offset for JLabels
-        int totalAmount = 0;
+	    int yOffset = 200; // JLabel의 초기 Y 오프셋
+	    int totalAmount = 0; // 총 잔액을 계산할 변수
 
-        // Display account balances and calculate total amount
-        for (Map.Entry<String, Integer> entry : accountBalances.entrySet()) {
-            String accountName = entry.getKey();
-            int balance = entry.getValue();
+	    // 계좌 잔액 표시 및 총 잔액 계산
+	    for (Map.Entry<String, Integer> entry : accountBalances.entrySet()) {
+	        String accountName = entry.getKey(); // 계좌 이름
+	        int balance = entry.getValue(); // 잔액
 
-            JLabel accountLabel = new JLabel(accountName + ": " + balance + "원");
-            accountLabel.setBounds(100, yOffset, 150, 30);
-            profileMenu.add(accountLabel);
+	        JLabel accountLabel = new JLabel(accountName + ": " + balance + "원"); // JLabel 생성
+	        accountLabel.setBounds(100, yOffset, 150, 30); // JLabel 위치 설정
+	        profileMenu.add(accountLabel); // JFrame에 JLabel 추가
 
-            totalAmount += balance; // Calculate total amount
-            yOffset += 50; // Increment Y offset for the next JLabel
-        }
+	        totalAmount += balance; // 총 잔액 계산
+	        yOffset += 50; // 다음 JLabel을 위한 Y 오프셋 증가
+	    }
 
-        JLabel totalAmountLabel = new JLabel("총 자산: " + totalAmount + "원");
-        totalAmountLabel.setBounds(100, yOffset, 150, 30);
-        profileMenu.add(totalAmountLabel);
+	    JLabel totalAmountLabel = new JLabel("총 자산: " + totalAmount + "원"); // 총 자산 JLabel 생성
+	    totalAmountLabel.setBounds(100, yOffset, 150, 30); // 총 자산 JLabel 위치 설정
+	    profileMenu.add(totalAmountLabel); // JFrame에 총 자산 JLabel 추가
 
-        // Set JFrame size based on the number of JLabels created
-        profileMenu.setSize(400, 200 + (accountBalances.size() * 50));
-        profileMenu.setVisible(true);
-    }
+	    // 생성된 JLabel 수에 기반하여 JFrame 크기 설정
+	    profileMenu.setSize(400, 200 + (accountBalances.size() * 50));
+	    profileMenu.setVisible(true); // JFrame 표시
+	}
+
 }
 
 

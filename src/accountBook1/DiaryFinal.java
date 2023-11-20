@@ -269,9 +269,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
 	        public void actionPerformed(ActionEvent e) {
 	            int option = JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
 	            if (option == JOptionPane.YES_OPTION) {
-	                sm.logout(); // Logout the current session using the SessionManager
-	                DiaryFinal.super.dispose(); // Close the current DiaryFinal frame
-	                Login loginMenu = new Login(); // Open the Login frame
+	                sm.logout(); // SessionManager을 사용하여 현재 세션 로그아웃
+	                DiaryFinal.super.dispose();
+	                Login loginMenu = new Login();
 	            }
 	        }
 	    });
@@ -351,72 +351,88 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         }
     }
     
-  //my패널에 입출금 글자 띄우기
+    //my패널에 입출금 글자 띄우기
     public void MyTransactions(String dateId) {
-    	int year = getYearByDateId(dateId);
-    	int month = getMonthByDateId(dateId);
-    	int day = getDayByDateId(dateId);
-    	String dateString = String.format("%d년 %d월 %d일", year, month, day);
-    	String dataString = "";
-    	
-    	// Get deposit data and expense data for the specified dateId
+        int year = getYearByDateId(dateId); // dateId에서 연도 추출
+        int month = getMonthByDateId(dateId); // dateId에서 월 추출
+        int day = getDayByDateId(dateId); // dateId에서 일 추출
+        String dateString = String.format("%d년 %d월 %d일", year, month, day); // 날짜 문자열 포맷팅
+
+        // 지정된 dateId에 대한 입금 및 지출 데이터 가져오기
         List<String[]> depositData = db.getDepositDataByDateId(sm.getID(), dateId);
         List<String[]> expenseData = db.getExpenseDataByDateId(sm.getID(), dateId);
-       
-        // Combine deposit and expense data into a single list
+
+        // 입금 및 지출 데이터를 단일 리스트로 결합
         List<String[]> dataList = new ArrayList<>();
         dataList.addAll(depositData);
         dataList.addAll(expenseData);
-        
-        // Construct dataString by iterating through the sorted dataList
+
+        // 정렬된 dataList을 반복하여 dataHTML을 구성
         String dataHTML = "<html><body>";
         for (String[] record : dataList) {
+            // 각 레코드를 HTML 형식으로 포맷팅
             String depositRecord = String.format("%s&nbsp;&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;&nbsp;%s&nbsp;&nbsp;&nbsp;&nbsp;%s<br>", record[0], record[1], record[2], record[3]);
             dataHTML += depositRecord;
         }
         dataHTML += "</body></html>";
-    	
 
-    	
-        memoPane.removeAll(); 
-        JLabel titleLabel = new JLabel(dateString);
-        JLabel dataLabel = new JLabel(dataHTML);
+        memoPane.removeAll(); // 기존 컴포넌트 제거
+
+        JLabel titleLabel = new JLabel(dateString); // 포맷된 날짜로 라벨 생성
+        JLabel dataLabel = new JLabel(dataHTML); // HTML 형식의 데이터로 라벨 생성
+
+        // 라벨 정렬 설정
         dataLabel.setVerticalAlignment(SwingConstants.TOP);
         dataLabel.setHorizontalAlignment(SwingConstants.LEFT);
+
+        // 라벨을 memoPane에 추가
         memoPane.add(titleLabel, BorderLayout.NORTH);
         memoPane.add(dataLabel, BorderLayout.CENTER);
-        memoPane.revalidate();
-        titleLabel.setFont(fnt_regular);
-        dataLabel.setFont(fnt_regular);
-    }
 
+        memoPane.revalidate(); // memoPane 업데이트를 위해 재검증
+
+        titleLabel.setFont(fnt_regular); // 제목 라벨에 폰트 설정
+        dataLabel.setFont(fnt_regular); // 데이터 라벨에 폰트 설정
+    }
+    
     //my패널에 원래있던 글자 삭제하고 다시 띄우기
     public void MyPaneltxt() {
     	memoPane.removeAll(); 
     	memoPane.revalidate();
     }
     
+ // 날짜를 입력받아 dateId를 반환하는 메소드
     public String getDateIdByDate(int year, int month, int day) {
-		String yearData = String.valueOf(year);
-		String monthData = (month < 10 ? "0" : "") + month;
-		String dayData = (day < 10 ? "0" : "") + day;
-		String dateId = yearData + monthData + dayData;
-		return dateId;
+        // 연도, 월, 일을 문자열로 변환하여 형식에 맞게 조합
+        String yearData = String.valueOf(year);
+        // 월과 일이 10 미만이면 앞에 "0"을 붙여서 01 ~ 09로 나타냄
+        String monthData = (month < 10 ? "0" : "") + month;	
+        String dayData = (day < 10 ? "0" : "") + day;
+
+        // 조합된 데이터를 dateId로 반환
+        String dateId = yearData + monthData + dayData;
+        return dateId;
     }
-    
+
+    // dateId에서 연도를 가져오는 메소드
     public int getYearByDateId(String dateId) {
-    	int year = Integer.parseInt(dateId.substring(0,4));
-    	return year;
+        // dateId의 앞부분에서 연도를 추출하여 반환
+        int year = Integer.parseInt(dateId.substring(0, 4));
+        return year;
     }
-    
+
+    // dateId에서 월을 가져오는 메소드
     public int getMonthByDateId(String dateId) {
-    	int month = Integer.parseInt(dateId.substring(4,6));
-    	return month;
+        // dateId의 중간 부분에서 월을 추출하여 반환
+        int month = Integer.parseInt(dateId.substring(4, 6));
+        return month;
     }
-    
+
+    // dateId에서 일을 가져오는 메소드
     public int getDayByDateId(String dateId) {
-    	int day = Integer.parseInt(dateId.substring(6,8));
-    	return day;
+        // dateId의 마지막 부분에서 일을 추출하여 반환
+        int day = Integer.parseInt(dateId.substring(6, 8));
+        return day;
     }
 
 }
