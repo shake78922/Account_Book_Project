@@ -26,12 +26,12 @@ public class MyProfile {
 		this.sm = sm; // 로그인한 사용자 session 객체 저장
 		profileMenu = new JFrame("Profile");
 		profileMenu.setLayout(null);
-		String background = "src/Images/MENU-3.png"; //백그라운드 이미지 url
+		String background = "src/Images/MyProfileBack2.png"; //백그라운드 이미지 url
 		JLabel menuBackground = new JLabel(new ImageIcon(background)); //백그라운드 이미지 
 //--------------------------------------------
 		JButton unLogin = new JButton("로그아웃");
 		unLogin.setFont(unLogin.getFont().deriveFont(14.0f));
-		unLogin.setBounds(260, 500, 100, 40);
+		unLogin.setBounds(310, 500, 100, 40);
 		unLogin.addActionListener(new ActionListener() {
 			
 			//로그아웃 후 메인페이지로 이동.
@@ -51,7 +51,7 @@ public class MyProfile {
 		//메뉴에서 캘린더 버튼을 누를시 캘린더 프레임으로 이동
 		JButton calendar = new JButton("캘린더");
 		calendar.setFont(calendar.getFont().deriveFont(14.0f));
-		calendar.setBounds(260,400 , 100, 40);
+		calendar.setBounds(310,400 , 100, 40);
 		calendar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -65,16 +65,16 @@ public class MyProfile {
 		//메뉴버튼에서 계좌번호 입력 & 현금 입력 버튼 
 		JButton money = new JButton("계좌번호 입력 & 현재 현금");
 		money.setFont(money.getFont().deriveFont(14.0f));
-		money.setBounds(220, 150, 180, 50);
+		money.setBounds(250, 150, 210, 50);
 		money.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame accountMenu = new JFrame();
 				accountMenu.setLayout(null);
-				String accountMenuBackGroundImages = "src/Images/accountMenu.jpg";
+				String accountMenuBackGroundImages = "src/Images/Cash&Account.png";
 				JLabel accountMenuBackground = new JLabel(new ImageIcon(accountMenuBackGroundImages));
-				accountMenuBackground.setBounds(0, 0, 400, 500);
+				accountMenuBackground.setBounds(0, 0, 500, 500);
 				
 				JLabel cash = new JLabel("현금");
 				JTextField cashMoney = new JTextField(20);
@@ -90,9 +90,9 @@ public class MyProfile {
 				});
 				//----------------------------
 				//계좌 입력란.
-				cashMoney.setBounds(165, 95,100, 30);
+				cashMoney.setBounds(200, 135,100, 30);
 				JLabel account = new JLabel("Account");
-				account.setBounds(100, 150, 60, 20);
+				account.setBounds(140, 200, 60, 20);
 				JTextField accountField = new JTextField(20);
 				accountField.addKeyListener(new KeyAdapter() {
 					@Override
@@ -103,7 +103,7 @@ public class MyProfile {
 						}
 					}
 				});
-				accountField.setBounds(165, 145, 100, 30);
+				accountField.setBounds(200, 195, 100, 30);
 				JButton save = new JButton("저장");
 				save.addActionListener(new ActionListener() {
 					
@@ -124,6 +124,10 @@ public class MyProfile {
 						db.updateMoney(cashInt, accountInt, sm.getID());
 						JOptionPane.showMessageDialog(null, "저장되었습니다.");
 						accountMenu.dispose();
+						profileMenu.dispose();
+						new MyProfile(sm);
+						
+						
 						
 					}
 				});
@@ -135,9 +139,9 @@ public class MyProfile {
 				
 				
 				
-				save.setBounds(170, 300, 60, 40);
+				save.setBounds(210, 300, 80, 40);
 				accountMenuBackground.add(save);
-				cash.setBounds(130, 100, 30, 20);
+				cash.setBounds(170, 140, 30, 20);
 				cash.setForeground(Color.white);
 				cash.setFont(cash.getFont().deriveFont(15.0f));
 				account.setFont(account.getFont().deriveFont(15.0f));
@@ -148,7 +152,7 @@ public class MyProfile {
 				accountMenu.add(accountField);
 				
 				accountMenu.add(accountMenuBackground);
-				accountMenu.setBounds(0, 0, 400, 500);
+				accountMenu.setBounds(0, 0, 500, 500);
 				accountMenu.setLocationRelativeTo(null);
 				accountMenu.setVisible(true);
 			}
@@ -156,7 +160,6 @@ public class MyProfile {
 		
 		
 		menuBackground.add(money);
-		
 		menuBackground.add(calendar);
 		menuBackground.add(unLogin);
 		
@@ -169,10 +172,10 @@ public class MyProfile {
 		
 		
 		
-		menuBackground.setBounds(0, 0, 600, 700);
+		menuBackground.setBounds(0, 0, 700, 700);
 		profileMenu.add(menuBackground);
 		profileMenu.setResizable(false);
-		profileMenu.setBounds(0, 0, 600, 700);
+		profileMenu.setBounds(0, 0, 700, 700);
 		profileMenu.setLocationRelativeTo(null);
 		profileMenu.setVisible(true);
 		profileMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -183,27 +186,31 @@ public class MyProfile {
         DB db = new DB();
         accountBalances = db.getAccountBalances(sm.getID());
 
-        int yOffset = 200; // Initial Y offset for JLabels
+        int yOffset = 230; //JLabel을 표기할 초기 오프셋.
         int totalAmount = 0;
 
-        // Display account balances and calculate total amount
+        // 계좌 잔액 표시 및 총 금액 계산
         for (Map.Entry<String, Integer> entry : accountBalances.entrySet()) {
             String accountName = entry.getKey();
             int balance = entry.getValue();
 
             JLabel accountLabel = new JLabel(accountName + ": " + balance + "원");
-            accountLabel.setBounds(100, yOffset, 150, 30);
+            accountLabel.setBounds(300, yOffset, 150, 30);
+            accountLabel.setFont(accountLabel.getFont().deriveFont(17.0f));
+            accountLabel.setForeground(Color.WHITE);
             profileMenu.add(accountLabel);
 
-            totalAmount += balance; // Calculate total amount
-            yOffset += 50; // Increment Y offset for the next JLabel
+            totalAmount += balance; // 총 금액 계산
+            yOffset += 50; // 다음 JLabel을 위한 Y오프셋 증가
         }
 
         JLabel totalAmountLabel = new JLabel("총 자산: " + totalAmount + "원");
-        totalAmountLabel.setBounds(100, yOffset, 150, 30);
+        totalAmountLabel.setFont(totalAmountLabel.getFont().deriveFont(17.0f));
+        totalAmountLabel.setForeground(Color.WHITE);
+        totalAmountLabel.setBounds(300, yOffset, 150, 30);
         profileMenu.add(totalAmountLabel);
 
-        // Set JFrame size based on the number of JLabels created
+        // 생성된 JLabel의 수에 기반하여 JFrame 크기 설정
         profileMenu.setSize(400, 200 + (accountBalances.size() * 50));
         profileMenu.setVisible(true);
     }

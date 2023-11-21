@@ -21,7 +21,7 @@ public class DB {
     private ResultSet rs = null;
     private String dbUrl = "jdbc:mysql://localhost:3306/account";
     private String dbUser = "root";
-    private String dbPassword = "1234";
+    private String dbPassword = "!@Arhwe2";
 
     // Add other database-related methods such as user retrieval, insertion, deletion, etc.
 
@@ -59,7 +59,7 @@ public class DB {
             stmt.setString(1, ID);
             stmt.setString(2, PW);
             rs = stmt.executeQuery();
-            authenticated = rs.next(); // Check if the result set has a row
+            authenticated = rs.next(); 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
