@@ -28,7 +28,6 @@ public class RoundedButton extends JButton {
 		super(action);
 		decorate();
 	}
-
 	public RoundedButton(Icon icon) {
 		super(icon);
 		decorate();
