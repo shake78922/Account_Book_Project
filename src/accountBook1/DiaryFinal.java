@@ -37,8 +37,8 @@ import a_loginFinal.SessionManager;
 //  ★ 색감을 로그인창이랑 맞추고싶긴한데...의견 주세요
 
 public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
-    Font fnt = new Font("SansSerif", Font.BOLD, 20); //★글씨체 통일감이 좋겠죠?
-    Font fnt_regular = new Font("SansSerif", Font.PLAIN, 14);
+    Font fnt = new Font("fira code", Font.BOLD, 20); //★글씨체 통일감이 좋겠죠?
+    Font fnt_regular = new Font("fira code", Font.PLAIN, 14);
     // 상단 년,월 달력옮기기 부분
     JPanel selectPane = new JPanel(); 
     JButton prevBtn = new JButton("◀");
@@ -53,6 +53,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     JPanel titlePane = new JPanel(new GridLayout(1, 7));
     String[] title = {"일", "월", "화", "수", "목", "금", "토"};
     JPanel dayPane = new JPanel(new GridLayout(0, 7)); 
+    
     
     //상세내역 메모부분 관련
     JPanel memoPane = new JPanel(new BorderLayout());
@@ -75,15 +76,27 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     DB db = new DB();
     SessionManager sm;
     
+    //그라데이션 배경색 부분
+//    Color sky = new Color(215, 236, 252);
+//    Color light_sky = new Color(215, 236, 252);
+//    
+//    JComponent color;
+//    Graphics2D g;
+//    Graphics2D g2 = (Graphics2D) g;
+//    GradientPaint gradientPaint = new GradientPaint(100,100,sky,300,300,light_sky);
+    
+    
     public DiaryFinal(SessionManager sm) {
         super("캘린더");
         this.sm = sm;
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR); 
         month = calendar.get(Calendar.MONTH)+1; //month 0부터 시작
-
+        
+       
+        
         //상단 위치배정이랑 디자인부분
-        selectPane.setBackground(new Color(255, 193, 204));  // ★폰트, 컬러는 디자인부분이니 나중에 같이 상의해주세욥
+        selectPane.setBackground(Color.WHITE);  // ★폰트, 컬러는 디자인부분이니 나중에 같이 상의해주세욥
         selectPane.add(prevBtn); prevBtn.setFont(fnt);
         selectPane.add(yearCombo); yearCombo.setFont(fnt);
         selectPane.add(yearLBl); yearLBl.setFont(fnt);
@@ -99,15 +112,18 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
 
         //title요일 호출
         setCalendarTitle();     // 월~일보여지는 메서드
+        titlePane.setBackground(Color.WHITE);
         centerPane.add(BorderLayout.NORTH, titlePane);
         add(centerPane);
 
         //날짜만들기
+        dayPane.setBackground(Color.WHITE);//날짜패널과 라벨 백그라운듯 색상 변경할거임
         centerPane.add(dayPane); 
         setDay();   
 
         //메모구역만들기
-        memoPane.setBorder(new TitledBorder(new LineBorder(Color.black,3),"<상세내역>"));
+        memoPane.setBorder(new TitledBorder(new LineBorder(Color.darkGray,3),"<상세내역>"));
+        memoPane.setBackground(Color.WHITE);
         memoPane.add(detailMemoLBl);
         add(memoPane, BorderLayout.SOUTH);
         memoPane.setPreferredSize(new Dimension(600, 150));
@@ -150,12 +166,13 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         }
         //날짜추가
         for(int day=1; day<=lastDay; day++) {
-        	
-        	String calDateId = getDateIdByDate(year, month, day);
-        	
-        	JLabel lbl = new JLabel(String.valueOf(day)); 
-        	lbl.setVerticalAlignment(SwingConstants.TOP);
-        	lbl.setHorizontalAlignment(SwingConstants.LEFT);
+           
+           String calDateId = getDateIdByDate(year, month, day);
+           
+           JLabel lbl = new JLabel(String.valueOf(day));
+           lbl.setBackground(Color.WHITE);
+           lbl.setVerticalAlignment(SwingConstants.TOP);
+           lbl.setHorizontalAlignment(SwingConstants.LEFT);
          
             int finalDay = day;
             lbl.addMouseListener(new MouseAdapter() {
@@ -171,61 +188,74 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
                     
                     // 입출금 선택창이랑 선택 후 창 부분
                    int result = JOptionPane.showOptionDialog(
-                		   DiaryFinal.this, // 프레임
-                		   dialPane,
-                		   "입출금",  //제목
-                		   JOptionPane.OK_CANCEL_OPTION, //버튼종류
-                		   JOptionPane.PLAIN_MESSAGE, 
-                		   null, //기본아이콘
-                		   null, //버튼커스텀아이콘
-                		   null);//기본값(null인 경우 첫 번째 버튼이 기본값)
+                         DiaryFinal.this, // 프레임
+                         dialPane,
+                         "입출금",  //제목
+                         JOptionPane.OK_CANCEL_OPTION, //버튼종류
+                         JOptionPane.PLAIN_MESSAGE, 
+                         null, //기본아이콘
+                         null, //버튼커스텀아이콘
+                         null);//기본값(null인 경우 첫 번째 버튼이 기본값)
              
                    //여기는 조장이..!!!!
-	                if (result == JOptionPane.OK_OPTION) {
-	                    if (rb1.isSelected()) {
-	                        //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
-	                        //입금창 메서드나 클래스 호출 후
-	                        //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
-	                        //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
-	                    	
-	                    	Deposits dep = new Deposits(year, month, clickedDay, sm);
+                   if (result == JOptionPane.OK_OPTION) {
+                       if (rb1.isSelected()) {
+                           //JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
+                           //입금창 메서드나 클래스 호출 후
+                           //여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
+                           //만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
+                          
+                          Deposits dep = new Deposits(year, month, clickedDay, sm);
 
 
-	                    	
-	
-	                    } else if (rb2.isSelected()) {
-	                        //JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
-	                        //위와 동일하지만 출금창으로
-	                    	
-	                    	Expenses exp = new Expenses(year, month, clickedDay, sm);
+                          
+   
+                       } else if (rb2.isSelected()) {
+                           //JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
+                           //위와 동일하지만 출금창으로
+                          
+                          Expenses exp = new Expenses(year, month, clickedDay, sm);
 
 
-	                    	
-	                    }
-	                }
+                          
+                       }
+                   }
                 
                 } 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                	super.mouseEntered(e);
-                    lbl.setBackground(new Color(255, 193, 204));
+                   super.mouseEntered(e);
+                   lbl.setForeground(Color.WHITE);
+                   lbl.setBackground(new Color(207, 239, 211));
                     MyTransactions(calDateId);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                	super.mouseExited(e);
-                	lbl.setBackground(null);
-                    MyPaneltxt();
+                   super.mouseExited(e);
+                    int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+                    // 일요일이면
+                    if (dayOfWeek == Calendar.SUNDAY) {
+                        lbl.setForeground(new Color(207, 239, 211));
+                    } else {
+                        lbl.setForeground(Color.LIGHT_GRAY);
+                    
+                    }
+                    lbl.setBackground(Color.WHITE);
+                    MyPaneltxt(); 
                 }
             });
             //출력하는 날짜에 대한 요일
             calendar.set(Calendar.DATE, day); 
-            int w = calendar.get(Calendar.DAY_OF_WEEK); 
-            if (w == 1) lbl.setForeground(Color.red); 
-            if (w == 7) lbl.setForeground(Color.blue); 
+            int w = calendar.get(Calendar.DAY_OF_WEEK);
+            lbl.setForeground(Color.LIGHT_GRAY);
+            if (w == 1) lbl.setForeground(new Color(207, 239, 211)); 
+//            if (w == 7) lbl.setForeground(Color.LIGHT_GRAY); 
             lbl.setOpaque(true);
             dayPane.add(lbl);
+            
+            
         }
     }
     //월화수목금토일 설정
@@ -233,8 +263,8 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
         for(int i =0; i <title.length; i++) { 
             JLabel lbl = new JLabel(title[i], JLabel.CENTER); 
             lbl.setFont(fnt); 
-            if(i ==0) lbl.setForeground(Color.red); 
-            if(i ==6) lbl.setForeground(Color.blue);
+            //if(i ==0) lbl.setForeground(Color.red); 
+            //if(i ==6) lbl.setForeground(Color.blue);
             titlePane.add(lbl); 
         }
     }
@@ -254,34 +284,34 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     }
     
     public void setMenuBar() {
-		JMenu jmu1 = new JMenu("옵션");
-		
-		JMenuItem jmi1 = new JMenuItem("내 프로필");
-	    jmi1.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	DiaryFinal.super.dispose();
-	            MyProfile profileFrame = new MyProfile(sm);
-	        }
-	    });
-		
-		JMenuItem jmi2 = new JMenuItem("로그아웃");
-	    jmi2.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	            int option = JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
-	            if (option == JOptionPane.YES_OPTION) {
-	                sm.logout(); // Logout the current session using the SessionManager
-	                DiaryFinal.super.dispose(); // Close the current DiaryFinal frame
-	                Login loginMenu = new Login(); // Open the Login frame
-	            }
-	        }
-	    });
-		
-		jmu1.add(jmi1);
-		jmu1.add(jmi2);
-		
-		jmb.add(jmu1);
-		
-		setJMenuBar(jmb);
+      JMenu jmu1 = new JMenu("옵션");
+      
+      JMenuItem jmi1 = new JMenuItem("내 프로필");
+       jmi1.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+              DiaryFinal.super.dispose();
+               MyProfile profileFrame = new MyProfile(sm);
+           }
+       });
+      
+      JMenuItem jmi2 = new JMenuItem("로그아웃");
+       jmi2.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               int option = JOptionPane.showConfirmDialog(null, "로그아웃 하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
+               if (option == JOptionPane.YES_OPTION) {
+                   sm.logout(); // Logout the current session using the SessionManager
+                   DiaryFinal.super.dispose(); // Close the current DiaryFinal frame
+                   Login loginMenu = new Login(); // Open the Login frame
+               }
+           }
+       });
+      
+      jmu1.add(jmi1);
+      jmu1.add(jmi2);
+      
+      jmb.add(jmu1);
+      
+      setJMenuBar(jmb);
     }
     
     
@@ -353,13 +383,13 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
     
   //my패널에 입출금 글자 띄우기
     public void MyTransactions(String dateId) {
-    	int year = getYearByDateId(dateId);
-    	int month = getMonthByDateId(dateId);
-    	int day = getDayByDateId(dateId);
-    	String dateString = String.format("%d년 %d월 %d일", year, month, day);
-    	String dataString = "";
-    	
-    	// Get deposit data and expense data for the specified dateId
+       int year = getYearByDateId(dateId);
+       int month = getMonthByDateId(dateId);
+       int day = getDayByDateId(dateId);
+       String dateString = String.format("%d년 %d월 %d일", year, month, day);
+       String dataString = "";
+       
+       // Get deposit data and expense data for the specified dateId
         List<String[]> depositData = db.getDepositDataByDateId(sm.getID(), dateId);
         List<String[]> expenseData = db.getExpenseDataByDateId(sm.getID(), dateId);
        
@@ -375,9 +405,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
             dataHTML += depositRecord;
         }
         dataHTML += "</body></html>";
-    	
+       
 
-    	
+       
         memoPane.removeAll(); 
         JLabel titleLabel = new JLabel(dateString);
         JLabel dataLabel = new JLabel(dataHTML);
@@ -392,32 +422,36 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener{
 
     //my패널에 원래있던 글자 삭제하고 다시 띄우기
     public void MyPaneltxt() {
-    	memoPane.removeAll(); 
-    	memoPane.revalidate();
+       memoPane.removeAll(); 
+       memoPane.revalidate();
+       
+       dayPane.setVisible(false); 
+        dayPane.removeAll(); 
+        setDay(); 
+        dayPane.setVisible(true); 
     }
     
     public String getDateIdByDate(int year, int month, int day) {
-		String yearData = String.valueOf(year);
-		String monthData = (month < 10 ? "0" : "") + month;
-		String dayData = (day < 10 ? "0" : "") + day;
-		String dateId = yearData + monthData + dayData;
-		return dateId;
+      String yearData = String.valueOf(year);
+      String monthData = (month < 10 ? "0" : "") + month;
+      String dayData = (day < 10 ? "0" : "") + day;
+      String dateId = yearData + monthData + dayData;
+      return dateId;
     }
     
     public int getYearByDateId(String dateId) {
-    	int year = Integer.parseInt(dateId.substring(0,4));
-    	return year;
+       int year = Integer.parseInt(dateId.substring(0,4));
+       return year;
     }
     
     public int getMonthByDateId(String dateId) {
-    	int month = Integer.parseInt(dateId.substring(4,6));
-    	return month;
+       int month = Integer.parseInt(dateId.substring(4,6));
+       return month;
     }
     
     public int getDayByDateId(String dateId) {
-    	int day = Integer.parseInt(dateId.substring(6,8));
-    	return day;
+       int day = Integer.parseInt(dateId.substring(6,8));
+       return day;
     }
 
 }
-

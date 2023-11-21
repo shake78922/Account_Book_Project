@@ -30,7 +30,7 @@ CREATE TABLE deposits (
     deposit_date DATE NOT NULL,
     deposit_amount INT NOT NULL,
     deposit_type VARCHAR(50) NOT NULL,
-    payment_type VARCHAR(20), -- Add a new column for payment type
+    payment_type VARCHAR(20),
     description VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES account_book(ID) ON DELETE CASCADE
 );
@@ -53,3 +53,6 @@ select * from account_book;
 select * from accounts;
 select * from deposits;
 select * from expenses;
+
+drop table deposits;
+drop table expenses;

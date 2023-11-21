@@ -15,6 +15,8 @@ public class PaymentTypeConverter {
 		korToEngMap.put("계좌2", "account2");
 		korToEngMap.put("계좌3", "account3");
 		
+		
+		
         engToKorMap = new HashMap<>();
         for (Map.Entry<String, String> entry : korToEngMap.entrySet()) {
             engToKorMap.put(entry.getValue(), entry.getKey());

@@ -1,6 +1,7 @@
 package accountBook1;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -9,9 +10,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -23,13 +22,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 
 import a_loginFinal.DB;
 import a_loginFinal.SessionManager;
 
 // icon images @ fontawesome.com
 // svg to png @ svgtopng.com
-// font size 20
+// menu img size 20px, button img size 30px
 
 public class Deposits extends JFrame implements ItemListener, ActionListener{
 	private Font fnt_title = new Font("SansSerif", Font.BOLD, 16);
@@ -102,7 +102,7 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		// 자산(결제수단) 콤보박스
 		List<String> paymentTypes = db.getPaymentTypesForUser(sm.getID());
 		paymentTypeCb = new JComboBox<>(paymentTypes.toArray(new String[0]));
-		
+		paymentTypeCb.setBackground(Color.WHITE);
 		
 		// -------
 		
@@ -119,6 +119,10 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		// 상단 패널 레이아웃
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
+		topPanel.setBackground(Color.white);
+		centerPanel.setBackground(Color.white);
+		bottomPanel.setBackground(Color.white);
+		
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(
@@ -167,12 +171,43 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		r4 = new JRadioButton("용돈", new ImageIcon(r4Img));
 		r5 = new JRadioButton("기타", new ImageIcon(r5Img));
 		
-		r1_1.setBorderPainted(true);
-		r1_2.setBorderPainted(true);
-		r2.setBorderPainted(true);
-		r3.setBorderPainted(true);
-		r4.setBorderPainted(true);
-		r5.setBorderPainted(true);
+		
+		r1_1.setBackground(new Color(255,255,255));
+		r1_2.setBackground(new Color(255,255,255));
+		r2.setBackground(new Color(255,255,255));
+		r3.setBackground(new Color(255,255,255));
+		r4.setBackground(new Color(255,255,255));
+		r5.setBackground(new Color(255,255,255));
+		
+//		r1_1.setBorderPainted(true);
+//		r1_2.setBorderPainted(true);
+//		r2.setBorderPainted(true);
+//		r3.setBorderPainted(true);
+//		r4.setBorderPainted(true);
+//		r5.setBorderPainted(true);
+		
+	
+		
+		r1_1.setContentAreaFilled(false);
+		r1_2.setContentAreaFilled(false);
+		r2.setContentAreaFilled(false);
+		r3.setContentAreaFilled(false);
+		r4.setContentAreaFilled(false);
+		r5.setContentAreaFilled(false);
+		
+		r1_1.setFocusPainted(false);
+		r1_2.setFocusPainted(false);
+		r2.setFocusPainted(false);
+		r3.setFocusPainted(false);
+		r4.setFocusPainted(false);
+		r5.setFocusPainted(false);
+		
+		r1_1.addActionListener(this);
+		r1_2.addActionListener(this);
+		r2.addActionListener(this);
+		r3.addActionListener(this);
+		r4.addActionListener(this);
+		r5.addActionListener(this);
 		
 		ButtonGroup radioGroup = new ButtonGroup();
 		radioGroup.add(r1_1);
@@ -189,6 +224,8 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		r4.addItemListener(this);
 		r5.addItemListener(this);
 		
+		
+		
 		centerPanel.setLayout(new FlowLayout());
 		centerPanel.add(r1_1);
 		centerPanel.add(r1_2);
@@ -201,21 +238,32 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		
 		// ======= 하단 패널 =======
 		
+		
 		confirmButton = new JButton("확인");
+		confirmButton.setBackground(new Color(207, 239, 211));
+		confirmButton.setForeground(Color.WHITE);
 		cancelButton = new JButton("취소");
+		cancelButton.setBackground(new Color(207, 239, 211));
+		cancelButton.setForeground(Color.WHITE);
 		
 		bottomPanel.setLayout(new FlowLayout());
+		bottomPanel.setBackground(Color.white);
 		bottomPanel.add(confirmButton);
 		bottomPanel.add(cancelButton);
 		
 		add(BorderLayout.SOUTH, bottomPanel);
 		
+		
+		
 		confirmButton.addActionListener(this);
+		confirmButton.setBorderPainted(false);
 		cancelButton.addActionListener(this);
+		cancelButton.setBorderPainted(false);
+		
 		
 		
 		setResizable(false);
-		setSize(400,400);
+		setSize(400,500);
 		setLocationRelativeTo(null);
         setVisible(true);
 	}
@@ -228,6 +276,109 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		}else if(obj == cancelButton) {
 			Deposits.super.dispose();
 		}
+		
+            if (e.getSource() == r1_1) {
+                JToggleButton selectedButton = r1_1;
+
+                 if (selectedButton.isSelected()) {
+                     // 선택된 경우 색상 변경
+                     selectedButton.setForeground(new Color(207, 239, 211));
+                 } else {
+                     // 선택이 해제된 경우 색상 변경 및 선택 취소
+                     selectedButton.setForeground(Color.darkGray);
+                     selectedButton.setSelected(false);
+                 }
+             } else {
+                 // 다른 버튼의 경우 색상을 원래대로 변경
+            	 r1_1.setForeground(Color.darkGray);
+            	 r1_1.setSelected(false);
+             }
+            
+            if (e.getSource() == r1_2) {
+                JToggleButton selectedButton = r1_2;
+
+                 if (selectedButton.isSelected()) {
+                     // 선택된 경우 색상 변경
+                     selectedButton.setForeground(new Color(207, 239, 211));
+                 } else {
+                     // 선택이 해제된 경우 색상 변경 및 선택 취소
+                     selectedButton.setForeground(Color.darkGray);
+                     selectedButton.setSelected(false);
+                 }
+             } else {
+                 // 다른 버튼의 경우 색상을 원래대로 변경
+            	 r1_2.setForeground(Color.darkGray);
+            	 r1_2.setSelected(false);
+             }
+            
+            if (e.getSource() == r2) {
+                JToggleButton selectedButton = r2;
+
+                 if (selectedButton.isSelected()) {
+                     // 선택된 경우 색상 변경
+                     selectedButton.setForeground(new Color(207, 239, 211));
+                 } else {
+                     // 선택이 해제된 경우 색상 변경 및 선택 취소
+                     selectedButton.setForeground(Color.darkGray);
+                     selectedButton.setSelected(false);
+                 }
+             } else {
+                 // 다른 버튼의 경우 색상을 원래대로 변경
+            	 r2.setForeground(Color.darkGray);
+            	 r2.setSelected(false);
+             }
+            
+            if (e.getSource() == r3) {
+                JToggleButton selectedButton = r3;
+
+                 if (selectedButton.isSelected()) {
+                     // 선택된 경우 색상 변경
+                     selectedButton.setForeground(new Color(207, 239, 211));
+                 } else {
+                     // 선택이 해제된 경우 색상 변경 및 선택 취소
+                     selectedButton.setForeground(Color.darkGray);
+                     selectedButton.setSelected(false);
+                 }
+             } else {
+                 // 다른 버튼의 경우 색상을 원래대로 변경
+            	 r3.setForeground(Color.darkGray);
+            	 r3.setSelected(false);
+             }
+            
+            if (e.getSource() == r4) {
+                JToggleButton selectedButton = r4;
+
+                 if (selectedButton.isSelected()) {
+                     // 선택된 경우 색상 변경
+                     selectedButton.setForeground(new Color(207, 239, 211));
+                 } else {
+                     // 선택이 해제된 경우 색상 변경 및 선택 취소
+                     selectedButton.setForeground(Color.darkGray);
+                     selectedButton.setSelected(false);
+                 }
+             } else {
+                 // 다른 버튼의 경우 색상을 원래대로 변경
+            	 r4.setForeground(Color.darkGray);
+            	 r4.setSelected(false);
+             }
+            
+            if (e.getSource() == r5) {
+                JToggleButton selectedButton = r5;
+
+                 if (selectedButton.isSelected()) {
+                     // 선택된 경우 색상 변경
+                     selectedButton.setForeground(new Color(207, 239, 211));
+                 } else {
+                     // 선택이 해제된 경우 색상 변경 및 선택 취소
+                     selectedButton.setForeground(Color.darkGray);
+                     selectedButton.setSelected(false);
+                 }
+             } else {
+                 // 다른 버튼의 경우 색상을 원래대로 변경
+            	 r5.setForeground(Color.darkGray);
+            	 r5.setSelected(false);
+             }
+		
 	}
 
 	@Override
