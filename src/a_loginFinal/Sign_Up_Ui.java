@@ -12,7 +12,7 @@ public class Sign_Up_Ui {
     private boolean idCheck = false;
 
     public JFrame signUp() {
-        DB db = new DB(); // Creating a new instance of the DB class
+        DB db = new DB();
         JFrame sigf = new JFrame("회원가입");
         sigf.setLayout(null);
 		String img = "src/Images/Login5-2.png";
@@ -95,17 +95,20 @@ public class Sign_Up_Ui {
                     return;
                 }
 
+                // 사용자를 데이터베이스에 추가
                 db.insertUser(id1, ovPw1, name1);
 
-                // Automatic login after successful signup
-                SessionManager sm = SessionManager.getInstance();
-                sm.setCurrentUser(id1);
+                // 회원가입 성공 시 자동 로그인
+                SessionManager sm = SessionManager.getInstance(); // SessionManager 인스턴스 가져오기
+                sm.setCurrentUser(id1); // 현재 사용자 설정
 
-                // Transition to the DiaryFinal class
-                MyProfile mp = new MyProfile(sm); // Create an instance of DiaryFinal
+                // DiaryFinal 클래스로 전환
+                MyProfile mp = new MyProfile(sm); // DiaryFinal의 인스턴스 생성
 
+                // 회원가입 완료 메시지 표시 및 창 닫기
                 JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다 !");
                 sigf.dispose();
+
             }
         });
         

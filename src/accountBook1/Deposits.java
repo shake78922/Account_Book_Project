@@ -268,6 +268,7 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
         setVisible(true);
 	}
 	
+<<<<<<< HEAD
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
@@ -381,51 +382,53 @@ public class Deposits extends JFrame implements ItemListener, ActionListener{
 		
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if(e.getStateChange() == ItemEvent.SELECTED) {
-			if(e.getSource() == r1_1){
-				depositType = r1_1.getText();
-			}else if(e.getSource() == r1_2){
-				depositType = r1_2.getText();
-			}else if(e.getSource() == r2){
-				depositType = r2.getText();
-			}else if(e.getSource() == r3){
-				depositType = r3.getText();
-			}else if(e.getSource() == r4){
-				depositType = r4.getText();
-			}else if(e.getSource() == r5){
-				depositType = r5.getText();
-			}
-		}
-		
-	}
-	
-	
-	private void onConfirmButtonClicked() {
-		
-		PaymentTypeConverter converter = new PaymentTypeConverter();
-		String korPaymentType = (String) paymentTypeCb.getSelectedItem();
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        // RadioButton 아이템 선택 상태가 변경될 때 동작을 정의하는 메서드
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            // 선택된 RadioButton에 따라 depositType 설정
+            if (e.getSource() == r1_1) {
+                depositType = r1_1.getText();
+            } else if (e.getSource() == r1_2) {
+                depositType = r1_2.getText();
+            } else if (e.getSource() == r2) {
+                depositType = r2.getText();
+            } else if (e.getSource() == r3) {
+                depositType = r3.getText();
+            } else if (e.getSource() == r4) {
+                depositType = r4.getText();
+            } else if (e.getSource() == r5) {
+                depositType = r5.getText();
+            }
+        }
+    }
+
+    private void onConfirmButtonClicked() {
+        // 확인 버튼 클릭 시 동작을 정의하는 메서드
+        
+        PaymentTypeConverter converter = new PaymentTypeConverter();
+        String korPaymentType = (String) paymentTypeCb.getSelectedItem();
         String engPaymentType = converter.convertKorToEngPayType(korPaymentType);
-		
-		depositData = new String[4];
-		depositData[0] = amountTf.getText();
-		depositData[1] = depositType;
-		depositData[2] = engPaymentType;
-		depositData[3] = descriptionTf.getText();
-		
-	    db.insertDeposit(
-	            sm.getID(),
-	            sqlDateId,
-	            Integer.parseInt(depositData[0]),
-	            depositData[1],
-	            depositData[2],
-	            depositData[3]
-	        );
-	    
-	    db.updateAccountBalancesForDeposits(sm.getID(), depositData);
-		
-		Deposits.super.dispose();
-	}
-	
+
+        depositData = new String[4];
+        depositData[0] = amountTf.getText();
+        depositData[1] = depositType;
+        depositData[2] = engPaymentType;
+        depositData[3] = descriptionTf.getText();
+
+        // 데이터베이스에 입금 데이터 추가
+        db.insertDeposit(
+            sm.getID(),
+            sqlDateId,
+            Integer.parseInt(depositData[0]),
+            depositData[1],
+            depositData[2],
+            depositData[3]
+        );
+
+        // 입금에 따른 계좌 잔액 업데이트
+        db.updateAccountBalancesForDeposits(sm.getID(), depositData);
+
+        Deposits.super.dispose();
+    }
 }
