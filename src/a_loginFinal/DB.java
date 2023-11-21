@@ -42,7 +42,7 @@ public class DB {
 			closeResources();
 		}
 	}
-
+	
 	// 회원 존재 여부 확인 (인증)
 	public boolean authenticateUser(String ID, String PW) {
 		boolean authenticated = false;

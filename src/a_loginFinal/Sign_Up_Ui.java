@@ -15,16 +15,16 @@ public class Sign_Up_Ui {
 		DB db = new DB();
 		JFrame sigf = new JFrame("회원가입");
 		sigf.setLayout(null);
-		String img = "src/Images/Login5-2.png";
+		String img = "src/Images/Logingreen2.png";
 		String userPng = "src/Images/user-solid.png";
 		JLabel userPngjl = new JLabel(new ImageIcon(userPng));
 		JButton searchId = new JButton("ID중복확인");
-		searchId.setBounds(320, 235, 90, 30);
-		userPngjl.setBounds(220, 100, 50, 57);
+		searchId.setBounds(375, 285, 100, 30);
+		userPngjl.setBounds(275, 160, 50, 57);
 		JLabel jl = new JLabel(new ImageIcon(img));
 		jl.add(searchId);
 		jl.add(userPngjl);
-		jl.setBounds(0, 0, 500, 728);
+		jl.setBounds(0, 0, 600, 600);
 		jl.setLayout(null);
 		sigf.add(jl);
 		JTextField name = new JTextField(20);
@@ -36,20 +36,20 @@ public class Sign_Up_Ui {
 		JLabel PW1 = new JLabel("비밀번호");
 		JPasswordField pw2 = new JPasswordField(20);
 		JLabel PW2 = new JLabel("비밀번호 재입력");
-		name.setBounds(190, 200, 130, 30);
-		NAME.setBounds(150, 200, 40, 30);
-		pw2.setBounds(190, 315, 130, 30);
-		PW2.setBounds(65, 300, 130, 60);
+		name.setBounds(245, 250, 130, 30);
+		NAME.setBounds(205, 250, 40, 30);
+		pw2.setBounds(245, 355, 130, 30);
+		PW2.setBounds(123, 340, 130, 60);
 		PW2.setFont(PW2.getFont().deriveFont(18.0f));
 		PW1.setFont(PW1.getFont().deriveFont(18.0f));
-		PW1.setBounds(120, 260, 80, 60);
-		pw1.setBounds(190, 275, 130, 30);
+		PW1.setBounds(180, 305, 80, 60);
+		pw1.setBounds(245, 320, 130, 30);
 		ID.setFont(ID.getFont().deriveFont(18.0f));
-		ID.setBounds(160, 220, 50, 60);
-		id.setBounds(190, 235, 130, 30);
+		ID.setBounds(215, 270, 50, 60);
+		id.setBounds(245, 285, 130, 30);
 
 		JLabel res = new JLabel();
-		res.setBounds(335, 255, 200, 30);
+		res.setBounds(385, 305, 200, 30);
 		jl.add(res);
 
 		searchId.addActionListener(new ActionListener() {
@@ -71,7 +71,7 @@ public class Sign_Up_Ui {
 		});
 
 		JButton signUp = new JButton("회원가입");
-		signUp.setBounds(200, 400, 100, 40);
+		signUp.setBounds(243, 400, 130, 40);
 		signUp.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -108,7 +108,6 @@ public class Sign_Up_Ui {
 				// 회원가입 완료 메시지 표시 및 창 닫기
 				JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다 !");
 				sigf.dispose();
-
 			}
 		});
 
@@ -129,7 +128,7 @@ public class Sign_Up_Ui {
 
 		sigf.setResizable(false);
 		sigf.setVisible(true);
-		sigf.setBounds(0, 0, 500, 728);
+		sigf.setBounds(0, 0, 600, 600);
 		sigf.setLocationRelativeTo(null);
 		sigf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

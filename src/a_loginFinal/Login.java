@@ -24,14 +24,14 @@ public class Login {
 		f.setLayout(null);
 
 		// 백그라운드 이미지
-		String img = "src/Images/Login5.png";
+		String img = "src/Images/Logingreen.png";
 		JLabel jl = new JLabel(new ImageIcon(img));
-		jl.setBounds(0, 0, 500, 728);
+		jl.setBounds(0, 0, 600, 600);
 		jl.setLayout(null);
 
 		String calendar = "src/Images/calendar.png";
 		JLabel cal = new JLabel(new ImageIcon(calendar));
-		cal.setBounds(240, 240, 40, 46);
+		cal.setBounds(279, 165, 40, 46);
 		jl.add(cal);
 
 		// 로그인 라벨 & 텍스트필드
@@ -39,14 +39,14 @@ public class Login {
 		JTextField id = new JTextField(20);
 		JPasswordField pw = new JPasswordField(20);
 		JButton login = new JButton("Login");
-		JLabel ID = new JLabel("ID");
-		JLabel PW = new JLabel("PW");
-		ID.setBounds(200, 300, 50, 50);
-		PW.setBounds(200, 330, 50, 50);
+//		JLabel ID = new JLabel("ID");
+//		JLabel PW = new JLabel("PW");
+//		ID.setBounds(185, 300, 50, 50);
+//		PW.setBounds(185, 330, 50, 50);
 
-		id.setBounds(220, 315, 100, 23);
-		pw.setBounds(220, 342, 100, 23);
-		login.setBounds(320, 320, 50, 40);
+		id.setBounds(215, 255, 215, 48);
+		pw.setBounds(215, 308, 215, 48);
+		login.setBounds(205, 400, 100, 40);
 		login.addActionListener(new ActionListener() {
 
 			@Override
@@ -66,17 +66,18 @@ public class Login {
 			}
 		});
 
-		ID.setForeground(Color.WHITE);
-		PW.setForeground(Color.WHITE);
+//		
+//		ID.setForeground(Color.WHITE);
+//		PW.setForeground(Color.WHITE);
 
 		jl.add(pw);
-		jl.add(PW);
+//		jl.add(PW);
 		jl.add(id);
-		jl.add(ID);
+//		jl.add(ID);
 		jl.add(login);
 
 		JButton signUp = new JButton("회원가입");
-		signUp.setBounds(220, 600, 80, 40);
+		signUp.setBounds(310, 400, 100, 40);
 		signUp.addActionListener(new ActionListener() {
 
 			@Override
@@ -90,7 +91,7 @@ public class Login {
 		jl.add(signUp);
 
 		f.setResizable(false);
-		f.setBounds(0, 0, 500, 728);
+		f.setBounds(0, 0, 600, 600);
 		f.setLocationRelativeTo(null);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);

@@ -197,20 +197,13 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 							null, // 버튼커스텀아이콘
 							null);// 기본값(null인 경우 첫 번째 버튼이 기본값)
 
-					// 여기는 조장이..!!!!
 					if (result == JOptionPane.OK_OPTION) {
 						if (rb1.isSelected()) {
-							// JOptionPane.showMessageDialog(DiaryFinal.this, clickedDay);
-							// 입금창 메서드나 클래스 호출 후
-							// 여기서 라벨추가로 입출금액 보여지도록 입출창에서 저장되는 변수 불러와서 스트링으로 변환해서 저장
-							// 만약 라벨1이 입금액을 저장클릭(셀렉티드) 했다면 라벨1에 "+"+입금액
-
+							// 입금창 클래스 호출
 							Deposits dep = new Deposits(year, month, clickedDay, sm);
 
 						} else if (rb2.isSelected()) {
-							// JOptionPane.showMessageDialog(DiaryFinal.this, "출금창");
-							// 위와 동일하지만 출금창으로
-
+							// 출금창 클래스 호출
 							Expenses exp = new Expenses(year, month, clickedDay, sm);
 
 						}
