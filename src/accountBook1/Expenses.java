@@ -15,6 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -40,7 +42,8 @@ import a_loginFinal.SessionManager;
 public class Expenses extends JFrame implements ItemListener, ActionListener {
 	private Font fnt_title = new Font("fira code", Font.BOLD, 16);
 	private Font fnt_regular = new Font("fira code", Font.PLAIN, 14);
-
+	private Color myGreen = new Color(207, 250, 211);
+	
 	private JPanel topPanel = new JPanel();
 	private JPanel centerPanel = new JPanel();
 	private JPanel bottomPanel = new JPanel();
@@ -71,7 +74,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 		this.sqlDateId = this.year + "-" + this.month + "-" + this.clickedDay;
 
 		// ======= 상단패널 ========
-
+		
 		// 날짜 아이콘
 		String calImg = "src/Images/calendar20.png";
 		JLabel calLabel = new JLabel(new ImageIcon(calImg));
@@ -135,13 +138,21 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 		};
 		descriptionTf.setBounds(45, 100, 400, 30);
 		descriptionTf.setFont(fnt_regular);
-
+		
+		// -------
+		// 테두리 세팅
+		
+		topPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		topPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, false));
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		centerPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, false));
+		
 		// -------
 
 		// 상단 패널 레이아웃
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
-		topPanel.setBackground(Color.white);
+		topPanel.setBackground(myGreen);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(layout.createSequentialGroup()
@@ -175,7 +186,7 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 
 		ButtonGroup radioGroup = new ButtonGroup();
 		centerPanel.setLayout(new GridLayout(5, 5));
-		centerPanel.setBackground(Color.white);
+		centerPanel.setBackground(myGreen);
 		// 아이콘배열
 		iconArray = new String[25];
 		for (int i = 0; i < iconArray.length; i++) {
@@ -191,11 +202,14 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 
 		for (int i = 0; i < rbArray.length; i++) {
 			rbArray[i] = new JRadioButton(rbLabelArray[i], new ImageIcon(iconArray[i]));
-			rbArray[i].setBorderPainted(false);
+			rbArray[i].setForeground(Color.GRAY);
+			rbArray[i].setBackground(Color.WHITE);
+			rbArray[i].setBorderPainted(true);
+			rbArray[i].setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			radioGroup.add(rbArray[i]);
 			rbArray[i].addItemListener(this);
 			centerPanel.add(rbArray[i]);
-			rbArray[i].setContentAreaFilled(false);
+			rbArray[i].setContentAreaFilled(true);
 			rbArray[i].setFocusPainted(false);
 			rbArray[i].addActionListener(this);
 		}
@@ -205,7 +219,11 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 		// ======= 하단 패널 =======
 
 		confirmButton = new RoundedButton("확인");
+		confirmButton.setBackground(myGreen);
+		confirmButton.setForeground(Color.GRAY);
 		cancelButton = new RoundedButton("취소");
+		cancelButton.setBackground(myGreen);
+		cancelButton.setForeground(Color.GRAY);
 
 		bottomPanel.setLayout(new FlowLayout());
 		bottomPanel.setBackground(Color.white);
@@ -238,15 +256,21 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 				JToggleButton selectedButton = rbArray[i];
 				if (selectedButton.isSelected()) {
 					// 선택된 경우 색상 변경
-					selectedButton.setForeground(new Color(207, 239, 211));
+					selectedButton.setForeground(Color.BLACK);
+					selectedButton.setBackground(myGreen);
+					selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 				} else {
 					// 선택이 해제된 경우 색상 변경 및 선택 취소
-					selectedButton.setForeground(Color.darkGray);
+					selectedButton.setForeground(Color.GRAY);
+					selectedButton.setBackground(Color.WHITE);
+					selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 					selectedButton.setSelected(false);
 				}
 			} else {
 				// 다른 버튼의 경우 색상을 원래대로 변경
-				rbArray[i].setForeground(Color.darkGray);
+				rbArray[i].setForeground(Color.GRAY);
+				rbArray[i].setBackground(Color.WHITE);
+				rbArray[i].setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				rbArray[i].setSelected(false);
 			}
 		}
@@ -268,6 +292,11 @@ public class Expenses extends JFrame implements ItemListener, ActionListener {
 
 	private void onConfirmButtonClicked() {
 		// 확인 버튼 클릭 시 동작을 정의하는 메서드
+		if (amountTf.getText().isEmpty() || descriptionTf.getText().isEmpty() || expenseType == null) {
+			JOptionPane.showMessageDialog(null, "모든 필드를 입력해 주세요.");
+			return;
+		}
+		
 		PaymentTypeConverter converter = new PaymentTypeConverter();
 		String korPaymentType = (String) paymentTypeCb.getSelectedItem();
 		String engPaymentType = converter.convertKorToEngPayType(korPaymentType);
