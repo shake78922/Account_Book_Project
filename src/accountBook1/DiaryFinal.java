@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -28,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import a_loginFinal.DB;
@@ -40,6 +42,7 @@ import a_loginFinal.SessionManager;
 public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 	Font fnt = new Font("fira code", Font.BOLD, 20); // ★글씨체 통일감이 좋겠죠?
 	Font fnt_regular = new Font("fira code", Font.PLAIN, 14);
+	Color myGreen = new Color(207, 250, 211);
 	// 상단 년,월 달력옮기기 부분
 	JPanel selectPane = new JPanel();
 	JButton prevBtn = new JButton("◀");
@@ -51,9 +54,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 
 	// 날짜,요일부분 관련
 	JPanel centerPane = new JPanel(new BorderLayout());
-	JPanel titlePane = new JPanel(new GridLayout(1, 7));
+	JPanel titlePane = new JPanel(new GridLayout(1, 7, 1, 1));
 	String[] title = { "일", "월", "화", "수", "목", "금", "토" };
-	JPanel dayPane = new JPanel(new GridLayout(0, 7));
+	JPanel dayPane = new JPanel(new GridLayout(0, 7, 1, 1));
 
 	// 상세내역 메모부분 관련
 	JPanel memoPane = new JPanel(new BorderLayout());
@@ -115,12 +118,14 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 
 		// title요일 호출
 		setCalendarTitle(); // 월~일보여지는 메서드
-		titlePane.setBackground(Color.WHITE);
+		titlePane.setBackground(myGreen);
+		titlePane.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 		centerPane.add(BorderLayout.NORTH, titlePane);
 		add(centerPane);
 
 		// 날짜만들기
 		dayPane.setBackground(Color.WHITE);// 날짜패널과 라벨 백그라운듯 색상 변경할거임
+		titlePane.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 		centerPane.add(dayPane);
 		setDay();
 
@@ -134,7 +139,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 
 		// 상단메뉴바 세팅
 		setMenuBar();
-
+		
 		// ---------------------------기능이벤트를 추가-------------------------------
 		prevBtn.addActionListener(this);
 		nextBtn.addActionListener(this);
@@ -172,6 +177,7 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 
 			JLabel lbl = new JLabel(String.valueOf(day));
 			lbl.setBackground(Color.WHITE);
+			lbl.setBorder(BorderFactory.createLineBorder(myGreen, 1, true));
 			lbl.setVerticalAlignment(SwingConstants.TOP);
 			lbl.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -214,8 +220,9 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					super.mouseEntered(e);
-					lbl.setForeground(Color.WHITE);
-					lbl.setBackground(new Color(207, 239, 211));
+					lbl.setForeground(Color.BLACK);
+					lbl.setBackground(myGreen);
+					lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 					MyTransactions(calDateId);
 				}
 
@@ -224,13 +231,15 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 					super.mouseExited(e);
 					int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
-					// 일요일이면
-					if (dayOfWeek == Calendar.SUNDAY) {
-						lbl.setForeground(new Color(207, 239, 211));
-					} else {
-						lbl.setForeground(Color.LIGHT_GRAY);
-
-					}
+//					// 일요일이면
+//					if (dayOfWeek == Calendar.SUNDAY) {
+//						lbl.setForeground(new Color(207, 239, 211));
+//					} else {
+//						lbl.setForeground(Color.GRAY);
+//
+//					}
+					lbl.setBorder(BorderFactory.createLineBorder(myGreen, 1, true));
+					lbl.setForeground(Color.GRAY);
 					lbl.setBackground(Color.WHITE);
 					MyPaneltxt();
 				}
@@ -238,10 +247,10 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 			// 출력하는 날짜에 대한 요일
 			calendar.set(Calendar.DATE, day);
 			int w = calendar.get(Calendar.DAY_OF_WEEK);
-			lbl.setForeground(Color.LIGHT_GRAY);
-			if (w == 1)
-				lbl.setForeground(new Color(207, 239, 211));
-//            if (w == 7) lbl.setForeground(Color.LIGHT_GRAY); 
+			lbl.setForeground(Color.GRAY);
+//			if (w == 1)
+//				lbl.setForeground(new Color(207, 239, 211));
+//            if (w == 7) lbl.setForeground(Color.GRAY); 
 			lbl.setOpaque(true);
 			dayPane.add(lbl);
 
@@ -252,9 +261,11 @@ public class DiaryFinal extends JFrame implements ItemListener, ActionListener {
 	public void setCalendarTitle() {
 		for (int i = 0; i < title.length; i++) {
 			JLabel lbl = new JLabel(title[i], JLabel.CENTER);
+			
 			lbl.setFont(fnt);
 			// if(i ==0) lbl.setForeground(Color.red);
 			// if(i ==6) lbl.setForeground(Color.blue);
+			lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
 			titlePane.add(lbl);
 		}
 	}

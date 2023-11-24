@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -34,7 +36,8 @@ import a_loginFinal.SessionManager;
 public class Deposits extends JFrame implements ItemListener, ActionListener {
 	private Font fnt_title = new Font("SansSerif", Font.BOLD, 16);
 	private Font fnt_regular = new Font("SansSerif", Font.PLAIN, 14);
-
+	private Color myGreen = new Color(207, 250, 211);
+	
 	private JPanel topPanel = new JPanel();
 	private JPanel centerPanel = new JPanel();
 	private JPanel bottomPanel = new JPanel();
@@ -114,11 +117,19 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 		descriptionTf.setFont(fnt_regular);
 
 		// -------
+		// 테두리 세팅
+		
+		topPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		topPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, false));
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		centerPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, false));
+		
+		// -------
 
 		// 상단 패널 레이아웃
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
-		topPanel.setBackground(Color.white);
+		topPanel.setBackground(myGreen);
 		centerPanel.setBackground(Color.white);
 		bottomPanel.setBackground(Color.white);
 
@@ -155,27 +166,41 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 		r3 = new JRadioButton("적금", new ImageIcon(r3Img));
 		r4 = new JRadioButton("용돈", new ImageIcon(r4Img));
 		r5 = new JRadioButton("기타", new ImageIcon(r5Img));
+		
+		r1_1.setForeground(Color.GRAY);
+		r1_2.setForeground(Color.GRAY);
+		r2.setForeground(Color.GRAY);
+		r3.setForeground(Color.GRAY);
+		r4.setForeground(Color.GRAY);
+		r5.setForeground(Color.GRAY);
+		
+		r1_1.setBackground(Color.WHITE);
+		r1_2.setBackground(Color.WHITE);
+		r2.setBackground(Color.WHITE);
+		r3.setBackground(Color.WHITE);
+		r4.setBackground(Color.WHITE);
+		r5.setBackground(Color.WHITE);
 
-		r1_1.setBackground(new Color(255, 255, 255));
-		r1_2.setBackground(new Color(255, 255, 255));
-		r2.setBackground(new Color(255, 255, 255));
-		r3.setBackground(new Color(255, 255, 255));
-		r4.setBackground(new Color(255, 255, 255));
-		r5.setBackground(new Color(255, 255, 255));
-
-//		r1_1.setBorderPainted(true);
-//		r1_2.setBorderPainted(true);
-//		r2.setBorderPainted(true);
-//		r3.setBorderPainted(true);
-//		r4.setBorderPainted(true);
-//		r5.setBorderPainted(true);
-
-		r1_1.setContentAreaFilled(false);
-		r1_2.setContentAreaFilled(false);
-		r2.setContentAreaFilled(false);
-		r3.setContentAreaFilled(false);
-		r4.setContentAreaFilled(false);
-		r5.setContentAreaFilled(false);
+		r1_1.setBorderPainted(true);
+		r1_2.setBorderPainted(true);
+		r2.setBorderPainted(true);
+		r3.setBorderPainted(true);
+		r4.setBorderPainted(true);
+		r5.setBorderPainted(true);
+		
+		r1_1.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
+		r1_2.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
+		r2.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
+		r3.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
+		r4.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
+		r5.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
+		
+		r1_1.setContentAreaFilled(true);
+		r1_2.setContentAreaFilled(true);
+		r2.setContentAreaFilled(true);
+		r3.setContentAreaFilled(true);
+		r4.setContentAreaFilled(true);
+		r5.setContentAreaFilled(true);
 
 		r1_1.setFocusPainted(false);
 		r1_2.setFocusPainted(false);
@@ -219,11 +244,13 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 		// ======= 하단 패널 =======
 
 		confirmButton = new JButton("확인");
-		confirmButton.setBackground(new Color(207, 239, 211));
-		confirmButton.setForeground(Color.WHITE);
+		confirmButton.setBackground(myGreen);
+		confirmButton.setForeground(Color.GRAY);
+		//confirmButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, false));
 		cancelButton = new JButton("취소");
-		cancelButton.setBackground(new Color(207, 239, 211));
-		cancelButton.setForeground(Color.WHITE);
+		cancelButton.setBackground(myGreen);
+		cancelButton.setForeground(Color.GRAY);
+		//cancelButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, false));
 
 		bottomPanel.setLayout(new FlowLayout());
 		bottomPanel.setBackground(Color.white);
@@ -257,15 +284,21 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 			if (selectedButton.isSelected()) {
 				// 선택된 경우 색상 변경
-				selectedButton.setForeground(new Color(207, 239, 211));
+				selectedButton.setForeground(Color.BLACK);
+				selectedButton.setBackground(myGreen);
+				selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 			} else {
 				// 선택이 해제된 경우 색상 변경 및 선택 취소
-				selectedButton.setForeground(Color.darkGray);
+				selectedButton.setForeground(Color.GRAY);
+				selectedButton.setBackground(Color.WHITE);
+				selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				selectedButton.setSelected(false);
 			}
 		} else {
 			// 다른 버튼의 경우 색상을 원래대로 변경
-			r1_1.setForeground(Color.darkGray);
+			r1_1.setForeground(Color.GRAY);
+			r1_1.setBackground(Color.WHITE);
+			r1_1.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			r1_1.setSelected(false);
 		}
 
@@ -274,15 +307,21 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 			if (selectedButton.isSelected()) {
 				// 선택된 경우 색상 변경
-				selectedButton.setForeground(new Color(207, 239, 211));
+				selectedButton.setForeground(Color.BLACK);
+				selectedButton.setBackground(myGreen);
+				selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 			} else {
 				// 선택이 해제된 경우 색상 변경 및 선택 취소
-				selectedButton.setForeground(Color.darkGray);
+				selectedButton.setForeground(Color.GRAY);
+				selectedButton.setBackground(Color.WHITE);
+				selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				selectedButton.setSelected(false);
 			}
 		} else {
 			// 다른 버튼의 경우 색상을 원래대로 변경
-			r1_2.setForeground(Color.darkGray);
+			r1_2.setForeground(Color.GRAY);
+			r1_2.setBackground(Color.WHITE);
+			r1_2.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			r1_2.setSelected(false);
 		}
 
@@ -291,15 +330,21 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 			if (selectedButton.isSelected()) {
 				// 선택된 경우 색상 변경
-				selectedButton.setForeground(new Color(207, 239, 211));
+				selectedButton.setForeground(Color.BLACK);
+				selectedButton.setBackground(myGreen);
+				selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 			} else {
 				// 선택이 해제된 경우 색상 변경 및 선택 취소
-				selectedButton.setForeground(Color.darkGray);
+				selectedButton.setForeground(Color.GRAY);
+				selectedButton.setBackground(Color.WHITE);
+				selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				selectedButton.setSelected(false);
 			}
 		} else {
 			// 다른 버튼의 경우 색상을 원래대로 변경
-			r2.setForeground(Color.darkGray);
+			r2.setForeground(Color.GRAY);
+			r2.setBackground(Color.WHITE);
+			r2.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			r2.setSelected(false);
 		}
 
@@ -308,15 +353,21 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 			if (selectedButton.isSelected()) {
 				// 선택된 경우 색상 변경
-				selectedButton.setForeground(new Color(207, 239, 211));
+				selectedButton.setForeground(Color.BLACK);
+				selectedButton.setBackground(myGreen);
+				selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 			} else {
 				// 선택이 해제된 경우 색상 변경 및 선택 취소
-				selectedButton.setForeground(Color.darkGray);
+				selectedButton.setForeground(Color.GRAY);
+				selectedButton.setBackground(Color.WHITE);
+				selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				selectedButton.setSelected(false);
 			}
 		} else {
 			// 다른 버튼의 경우 색상을 원래대로 변경
-			r3.setForeground(Color.darkGray);
+			r3.setForeground(Color.GRAY);
+			r3.setBackground(Color.WHITE);
+			r3.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			r3.setSelected(false);
 		}
 
@@ -325,15 +376,21 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 			if (selectedButton.isSelected()) {
 				// 선택된 경우 색상 변경
-				selectedButton.setForeground(new Color(207, 239, 211));
+				selectedButton.setForeground(Color.BLACK);
+				selectedButton.setBackground(myGreen);
+				selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 			} else {
 				// 선택이 해제된 경우 색상 변경 및 선택 취소
-				selectedButton.setForeground(Color.darkGray);
+				selectedButton.setForeground(Color.GRAY);
+				selectedButton.setBackground(Color.WHITE);
+				selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				selectedButton.setSelected(false);
 			}
 		} else {
 			// 다른 버튼의 경우 색상을 원래대로 변경
-			r4.setForeground(Color.darkGray);
+			r4.setForeground(Color.GRAY);
+			r4.setBackground(Color.WHITE);
+			r4.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			r4.setSelected(false);
 		}
 
@@ -342,15 +399,21 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 			if (selectedButton.isSelected()) {
 				// 선택된 경우 색상 변경
-				selectedButton.setForeground(new Color(207, 239, 211));
+				selectedButton.setForeground(Color.BLACK);
+				selectedButton.setBackground(myGreen);
+				selectedButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 			} else {
 				// 선택이 해제된 경우 색상 변경 및 선택 취소
-				selectedButton.setForeground(Color.darkGray);
+				selectedButton.setForeground(Color.GRAY);
+				selectedButton.setBackground(Color.WHITE);
+				selectedButton.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 				selectedButton.setSelected(false);
 			}
 		} else {
 			// 다른 버튼의 경우 색상을 원래대로 변경
-			r5.setForeground(Color.darkGray);
+			r5.setForeground(Color.GRAY);
+			r5.setBackground(Color.WHITE);
+			r5.setBorder(BorderFactory.createLineBorder(myGreen, 3, true));
 			r5.setSelected(false);
 		}
 
@@ -379,7 +442,11 @@ public class Deposits extends JFrame implements ItemListener, ActionListener {
 
 	private void onConfirmButtonClicked() {
 		// 확인 버튼 클릭 시 동작을 정의하는 메서드
-
+		if (amountTf.getText().isEmpty() || descriptionTf.getText().isEmpty() || depositType == null) {
+			JOptionPane.showMessageDialog(null, "모든 필드를 입력해 주세요.");
+			return;
+		}
+		
 		PaymentTypeConverter converter = new PaymentTypeConverter();
 		String korPaymentType = (String) paymentTypeCb.getSelectedItem();
 		String engPaymentType = converter.convertKorToEngPayType(korPaymentType);
